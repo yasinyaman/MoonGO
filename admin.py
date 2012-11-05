@@ -34,21 +34,21 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-    	    db_list = self.db.database_names()
-    	    for dbnamess in db_list:
-    	    	print "Database :" + dbnamess
-    	    	collection_list = self.db[dbnamess].collection_names()
-    	    	for i in collection_list:
-    	    	 	print "> Colletion :" + i
-    	    	 	db_conn = self.db[dbnamess]
-    	    	 	doc_list = db_conn[i].find()
-    	    	 	if doc_list:
-	    	    	 	for doc in doc_list:
-	    	    	 		print doc.get("_id")
-	    	    	 		for key in doc.keys():
-	    	    	 			print ">> Key :"+key
-	    	    	else:
-	    	    	 	pass
+            db_list = self.db.database_names()
+            for dbnamess in db_list:
+                print "Database :" + dbnamess
+                collection_list = self.db[dbnamess].collection_names()
+                for i in collection_list:
+                    print "> Colletion :" + i
+                    db_conn = self.db[dbnamess]
+                    doc_list = db_conn[i].find()
+                    if doc_list:
+                        for doc in doc_list:
+                            print doc.get("_id")
+                            for key in doc.keys():
+                                print ">> Key :"+key
+                    else:
+                        pass
             self.redirect("/databases")
             self.render("database.html", db_list=db_list)
             self.write(db_list[0])
@@ -168,18 +168,14 @@ class DocEdit(BaseHandler):
     def post(self, dbname, collname, docid):
         print dbname
         data = self.get_arguments("message", False)
-        self.write(self.request.body)
+        #self.write(self.request.body)
+        import demjson
         dat = json.dumps(data[0], skipkeys=True)
         db_conn = self.db[dbname]
-
+        dd =  data[0].replace("u","").replace("'","\"").replace("ObjectId(","").replace(")","")
+        #dd = demjson.encode(str(data[0]))
+        db_conn[collname].save(demjson.decode(dd))
         
-    
-        #print tornado.escape.json_encode(data[0])
-
-        # Converting to JSON with bson.json_util of pymongo
-        from bson.json_util import dumps
-        #print dumps(data[0])
-
 class RegisterHandler(BaseHandler):
     def get(self):
         if not self.current_user:

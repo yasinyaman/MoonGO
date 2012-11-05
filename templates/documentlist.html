@@ -1,0 +1,13 @@
+<h1>Collection Stats</h1>
+
+{{collstats}} <br/>
+
+
+
+<h1>Documents</h1>
+<ul>
+      {% for doc in doc_list %}
+     <li> <a href="/{{dbname}}/{{collname}}/{{doc["_id"]}}"> {{doc}}</a> | <a href="/{{dbname}}/{{collname}}/{{doc["_id"]}}/remove"> Remove</a> </li>
+     {% end %}
+
+ </ul>

@@ -1,0 +1,31 @@
+
+<h1>Server Info</h1>
+Server Info : {{server_info["sysInfo"]}} <br/>
+Version : {{server_info["version"]}} <br/>
+Version Array : {{server_info["versionArray"]}} <br/>
+Debug : {{server_info["debug"]}} <br/>
+Max Bson Object Size : {{server_info["maxBsonObjectSize"]}} <br/>
+git Version : {{server_info["gitVersion"]}} 
+
+
+<h1>Copy From</h1>
+<strong>Local DB Copy:</strong> URL path "/[maindb]/copy/[todb]"<br/>
+<strong>External DB Copy:</strong>
+ <form name="input" action="/hostdbcopy" method="post">
+ {% module xsrf_form_html() %}
+
+User: <input type="text" name="user"><br>
+Password: <input type="text" name="password"><br>
+Adress*: <input type="text" name="host"><br>
+Host DB*: <input type="text" name="hostdb"><br>
+Clone DB*: <input type="text" name="db"><br>
+<input type="submit" value="Copy">
+</form>
+
+<h1>Databases</h1>
+<ul>
+      {% for dbname in db_list %}
+     <li> <a href="/{{dbname}}"> {{dbname}}</a> | <a href="/{{dbname}}/drop"> Drop</a> </li>
+      {% end %}
+
+ </ul>

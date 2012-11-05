@@ -1,0 +1,13 @@
+
+<strong>Rename:</strong> URL path "/[db]/[colletion]/reanme/[newcollection]"<br/>
+<strong>Create:</strong> URL path "/[db]/[colletion]/create"<br/>
+<strong>Drop:</strong> URL path "/[db]/[colletion]/drop"<br/>
+<strong>To Do:</strong> <br/>
+ - İndex
+<h1>Collections</h1>
+<ul>
+      {% for collection in collection_list %}
+     <li> <a href="/{{dbname}}/{{collection}}"> {{collection}}</a>| <a href="/{{dbname}}/{{collection}}/drop"> Drop</a></li>
+      {% end %}
+
+ </ul>

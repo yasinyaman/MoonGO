@@ -101,11 +101,19 @@ class HostDBCopy(BaseHandler):
             password = False
 
         if user and password:
-            self.db.copy_database(hostdb["hostdb"][0], hostdb["db"][0],
-                                  hostdb["host"][0], user, password)
+            self.db.copy_database(
+                                  hostdb["hostdb"][0], 
+                                  hostdb["db"][0],
+                                  hostdb["host"][0], 
+                                  user, 
+                                  password
+                                 )
         else:
-            self.db.copy_database(hostdb["hostdb"][0], hostdb["db"][0],
-                                  hostdb["host"][0])
+            self.db.copy_database(
+                                  hostdb["hostdb"][0], 
+                                  hostdb["db"][0],
+                                  hostdb["host"][0]
+                                 )
         self.redirect("/%s" % (hostdb["db"]))
         #self.write(host.get(host))
 
@@ -115,8 +123,11 @@ class CollList(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
         collection_list = self.db[dbname].collection_names()
-        self.render("collection.html", collection_list=collection_list,
-                    dbname=dbname)
+        self.render(
+                    "collection.html", 
+                    collection_list=collection_list,
+                    dbname=dbname
+                   )
 
 
 class CollRename(BaseHandler):
@@ -124,8 +135,11 @@ class CollRename(BaseHandler):
     def get(self, dbname, collname, collrename):
         db_conn = self.db[dbname]
         doc_list = db_conn[collname].rename(collrename)
-        self.render("collection.html", collection_list=collection_list,
-                    dbname=dbname)
+        self.render(
+                    "collection.html",
+                    collection_list=collection_list,
+                    dbname=dbname
+                   )
 
 
 class CollDrop(BaseHandler):
@@ -151,8 +165,13 @@ class DocList(BaseHandler):
         db_conn = self.db[dbname]
         doc_list = db_conn[collname].find()
         collstats = db_conn.command("collstats", collname)
-        self.render("documentlist.html", doc_list=doc_list, dbname=dbname,
-                    collname=collname, collstats=collstats)
+        self.render(
+                    "documentlist.html", 
+                    doc_list=doc_list, 
+                    dbname=dbname,
+                    collname=collname, 
+                    collstats=collstats
+                   )
 
 
 class Doc(BaseHandler):
@@ -162,8 +181,13 @@ class Doc(BaseHandler):
         doc = db_conn[collname].find_one(
             {"_id": pymongo.son_manipulator.ObjectId(docid)})
         formdoc = doc
-        self.render("document.html", doc=doc, formdoc=formdoc, dbname=dbname,
-                    collname=collname)
+        self.render(
+                    "document.html", 
+                    doc=doc, 
+                    formdoc=formdoc, 
+                    dbname=dbname,
+                    collname=collname
+                   )
 
 
 class DocRemove(BaseHandler):
@@ -171,7 +195,7 @@ class DocRemove(BaseHandler):
     def get(self, dbname, collname, docid):
         db_conn = self.db[dbname]
         """doc = db_conn[collname].find_one(
-           {"_id": pymongo.son_manipulator.ObjectId(docid)})"""
+        {"_id": pymongo.son_manipulator.ObjectId(docid)})"""
         db_conn[collname].remove(
             {"_id": pymongo.son_manipulator.ObjectId(docid)})
         #self.render("document.html",doc=doc,dbname=dbname,collname=collname)
@@ -194,8 +218,12 @@ class DocEdit(BaseHandler):
         data = self.get_arguments("message", False)
         #self.write(self.request.body)
         import demjson
-        dat = json.dumps(data[0], sort_keys=False, indent=4,
-                         default=json_util.default)
+        dat = json.dumps(
+                         data[0], 
+                         sort_keys=False, 
+                         indent=4,
+                         default=json_util.default
+                        )
         print dat
         db_conn = self.db[dbname]
         dd = data[0].replace("u", "").replace("'", "\"")
@@ -255,7 +283,6 @@ class RegisterHandler(BaseHandler):
             password=bcrypt.hashpw(password, bcrypt.gensalt()),
             mail=mail
         )
-
         self.db.moongo_sys.users.save(user)
         self.redirect("/auth/login")
 
@@ -266,26 +293,28 @@ class LoginHandler(BaseHandler):
             self.render("login.html")
         else:
             self.redirect("/")
-
     def post(self):
         user_name = self.get_argument("user_name", False)
         password = self.get_argument("password", False)
-
         if user_name and password:
-            user = self.db.moongo_sys.users.find_one({"user_name": user_name},
-                                                     {"_id": 0})
+            user = self.db.moongo_sys.users.find_one(
+                                                     {"user_name": user_name},
+                                                     {"_id": 0}
+                                                    )
             if user:
                 crypt_pass = bcrypt.hashpw(password, user["password"])
                 pass_check = crypt_pass == user["password"]
                 if pass_check:
-                    self.set_secure_cookie("current_user",
-                                           tornado.escape.json_encode(user))
+                    self.set_secure_cookie(
+                                           "current_user",
+                                           tornado.escape.json_encode(user)
+                                          )
                     self.redirect("/")
                 else:
                     self.write("Incorrect username or password.")
             else:
                 self.write("""User is not exist.
-                           <a href='/auth/register'>Register?</a>""")
+                <a href='/auth/register'>Register?</a>""")
         else:
             self.write("You must fill both username and password")
 

@@ -100,8 +100,7 @@ class HostDBCopy(BaseHandler):
             password = False
 
         if user and password:
-            self.db.copy_database
-            (
+            self.db.copy_database(
                 hostdb["hostdb"][0],
                 hostdb["db"][0],
                 hostdb["host"][0],
@@ -109,8 +108,7 @@ class HostDBCopy(BaseHandler):
                 password
             )
         else:
-            self.db.copy_database
-            (
+            self.db.copy_database(
                 hostdb["hostdb"][0],
                 hostdb["db"][0],
                 hostdb["host"][0]
@@ -124,8 +122,7 @@ class CollList(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
         collection_list = self.db[dbname].collection_names()
-        self.render
-        (
+        self.render(
             "collection.html",
             collection_list=collection_list,
             dbname=dbname
@@ -137,12 +134,7 @@ class CollRename(BaseHandler):
     def get(self, dbname, collname, collrename):
         db_conn = self.db[dbname]
         doc_list = db_conn[collname].rename(collrename)
-        self.render
-        (
-            "collection.html",
-            collection_list=collection_list,
-            dbname=dbname
-        )
+        self.redirect("/%s/%s" % (dbname, collrename))
 
 
 class CollDrop(BaseHandler):
@@ -168,8 +160,7 @@ class DocList(BaseHandler):
         db_conn = self.db[dbname]
         doc_list = db_conn[collname].find()
         collstats = db_conn.command("collstats", collname)
-        self.render
-        (
+        self.render(
             "documentlist.html",
             doc_list=doc_list,
             dbname=dbname,
@@ -185,8 +176,7 @@ class Doc(BaseHandler):
         doc = db_conn[collname].find_one(
             {"_id": pymongo.son_manipulator.ObjectId(docid)})
         formdoc = doc
-        self.render
-        (
+        self.render(
             "document.html",
             doc=doc,
             formdoc=formdoc,
@@ -223,8 +213,7 @@ class DocEdit(BaseHandler):
         data = self.get_arguments("message", False)
         #self.write(self.request.body)
         import demjson
-        dat = json.dumps
-        (
+        dat = json.dumps(
             data[0],
             sort_keys=False,
             indent=4,
@@ -283,8 +272,7 @@ class RegisterHandler(BaseHandler):
         else:
             self.write("Mail is required")
             return
-        user = dict
-        (
+        user = dict(
             name=name,
             user_name=user_name,
             password=bcrypt.hashpw(password, bcrypt.gensalt()),
@@ -294,7 +282,7 @@ class RegisterHandler(BaseHandler):
         self.redirect("/auth/login")
 
 
-class loginhandler(BaseHandler):
+class LoginHandler(BaseHandler):
     def get(self):
         if not self.current_user:
             self.render("login.html")
@@ -354,14 +342,20 @@ urls = ([
     (r"/([\_\.A-Za-z0-9]+)/copy/([\_\.A-Za-z0-9]+)", DBCopy),
     (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/create", CollCreate),
     (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/drop", CollDrop),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/rename/([\_\.A-Za-z0-9]+)",
-        CollRename),
+    (
+        r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/rename/([\_\.A-Za-z0-9]+)",
+        CollRename
+    ),
     (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)", DocList),
     (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)", Doc),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/remove",
-        DocRemove),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/edit",
-        DocEdit)
+    (
+        r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/remove",
+        DocRemove
+    ),
+    (
+        r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/edit",
+        DocEdit
+    )
 ])
 
 application = tornado.web.Application(urls, **settings)

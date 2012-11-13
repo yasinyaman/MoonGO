@@ -8,9 +8,10 @@ import tornado.escape
 import pymongo
 import bcrypt
 import bson
+from bson import json_util
+
 import json
 import ast
-import jsonpickle
 from tornado.options import define, options
 import os
 define("port", default=8877, type=int)
@@ -175,13 +176,12 @@ class Doc(BaseHandler):
         db_conn = self.db[dbname]
         doc = db_conn[collname].find_one(
             {"_id": pymongo.son_manipulator.ObjectId(docid)})
-        formdoc = doc
-        self.render(
-            "document.html",
+        formdoc = json.dumps(doc, default=json_util.default)
+        self.render("document.html",
             doc=doc,
             formdoc=formdoc,
             dbname=dbname,
-            collname=collname
+            collname=collname,
         )
 
 
@@ -200,36 +200,14 @@ class DocRemove(BaseHandler):
 class DocEdit(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname, docid):
-        db_conn = self.db[dbname]
-        print db_conn[collname].find_one(
-            {"_id": pymongo.son_manipulator.ObjectId(docid)})
-        #self.render("document.html", doc=doc, dbname=dbname,
-        #            collname=collname)
-        #self.redirect("/%s/%s" % (dbname, collname))
+        pass
 
     @tornado.web.authenticated
     def post(self, dbname, collname, docid):
-        print dbname
-        data = self.get_arguments("message", False)
-        #self.write(self.request.body)
-        import demjson
-        dat = json.dumps(
-            data[0],
-            sort_keys=False,
-            indent=4,
-            default=json_util.default
-        )
-        print dat
         db_conn = self.db[dbname]
-        dd = data[0].replace("u", "").replace("'", "\"")
-        dd = dd.replace("ObjectId(", "").replace(")", "")
-        #dd = demjson.encode(str(data[0]))
-        #db_conn[collname].save(demjson.decode(json.dumps(dd)))
-        data = demjson.decode(json.dumps(dd))
-        print data
-        #data_id = data["_id"]
-        #data["_id"] = pymongo.son_manipulator.ObjectId(data["_id"])
-        db_conn[collname].save(data)
+        data = self.get_arguments("message", False)
+        save_data = json.loads(data[0], object_hook=json_util.object_hook)
+        db_conn[collname].save(save_data)
 
 
 class RegisterHandler(BaseHandler):

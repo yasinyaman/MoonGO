@@ -35,6 +35,13 @@ class BaseHandler(tornado.web.RequestHandler):
         if not hasattr(BaseHandler, "_fs"):
             _fs = gridfs.GridFS(self.db)
         return _fs
+class modules(object):
+    def redirectCustom(self, url, template, **kwargs):
+        if url:
+            self.redirect("%s" % (url))
+        else:
+            self.render(template, doc)
+
 
 
 class MainHandler(BaseHandler):
@@ -181,7 +188,7 @@ class Doc(BaseHandler):
             doc=doc,
             formdoc=formdoc,
             dbname=dbname,
-            collname=collname,
+            collname=collname
         )
 
 
@@ -196,18 +203,47 @@ class DocRemove(BaseHandler):
         #self.render("document.html",doc=doc,dbname=dbname,collname=collname)
         self.redirect("/%s/%s" % (dbname, collname))
 
+class DocAdd(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, dbname, collname):
+        self.render("documentadd.html",
+            dbname=dbname,
+            collname=collname,
+        )
+
+    @tornado.web.authenticated
+    def post(self, dbname, collname):
+        db_conn = self.db[dbname]
+        data = self.get_arguments("jsonData", False)
+        save_data = json.loads(data[0], object_hook=json_util.object_hook)
+        print save_data
+        db_conn[collname].save(save_data)
+        docid = db_conn[collname].find_one(save_data)["_id"]
+
+        self.redirect("/%s/%s/%s" % (dbname, collname, docid))
+
 
 class DocEdit(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname, docid):
-        pass
+        db_conn = self.db[dbname]
+        doc = db_conn[collname].find_one(
+            {"_id": pymongo.son_manipulator.ObjectId(docid)})
+        formdoc = json.dumps(doc, default=json_util.default)
+        self.render("documentedit.html",
+            formdoc=formdoc,
+            dbname=dbname,
+            docid=docid,
+            collname=collname,
+        )
 
     @tornado.web.authenticated
     def post(self, dbname, collname, docid):
         db_conn = self.db[dbname]
-        data = self.get_arguments("message", False)
+        data = self.get_arguments("jsonData", False)
         save_data = json.loads(data[0], object_hook=json_util.object_hook)
         db_conn[collname].save(save_data)
+        self.redirect("/%s/%s" % (dbname, collname))
 
 
 class RegisterHandler(BaseHandler):
@@ -320,18 +356,16 @@ urls = ([
     (r"/([\_\.A-Za-z0-9]+)/copy/([\_\.A-Za-z0-9]+)", DBCopy),
     (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/create", CollCreate),
     (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/drop", CollDrop),
-    (
-        r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/rename/([\_\.A-Za-z0-9]+)",
+    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/rename/([\_\.A-Za-z0-9]+)",
         CollRename
     ),
     (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)", DocList),
+    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/add", DocAdd),
     (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)", Doc),
-    (
-        r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/remove",
+    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/remove",
         DocRemove
     ),
-    (
-        r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/edit",
+    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/edit",
         DocEdit
     )
 ])

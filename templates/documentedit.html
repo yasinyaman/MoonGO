@@ -1,0 +1,8 @@
+
+<h1>Document Edit</h1>
+<h3><a href="/{{dbname}}/{{collname}}/{{docid}}/remove"> Remove</a></h3></br>
+ <form name="input" action="/{{dbname}}/{{collname}}/{{docid}}/edit" method="post">
+ 	{% module xsrf_form_html() %}
+ 	<textarea name="jsonData" rows="10%" cols="70%"> {{formdoc}}</textarea>
+<input type="submit" value="Submit">
+</form>

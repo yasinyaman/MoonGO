@@ -1,13 +1,8 @@
 <h1>Document</h1>
-<h3><a href="/{{dbname}}/{{collname}}/{{doc["_id"]}}/remove"> Remove</a></h3>
+<h3><a href="/{{dbname}}/{{collname}}/{{doc["_id"]}}/remove"> Remove</a> | <a href="/{{dbname}}/{{collname}}/{{doc["_id"]}}/edit">Edit</a></h3>
 <ul>
 {{doc}}
  </ul>
 
 
 
- <form name="input" action="/{{dbname}}/{{collname}}/{{doc["_id"]}}/edit" method="post">
- 	{% module xsrf_form_html() %}
- 	<input type="text" name="message" value="{{doc}}" >
-<input type="submit" value="Submit">
-</form>

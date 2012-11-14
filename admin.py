@@ -5,13 +5,11 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 import tornado.escape
+import tornado.locale
 import pymongo
 import bcrypt
-import bson
 from bson import json_util
-
 import json
-import ast
 from tornado.options import define, options
 import os
 define("port", default=8877, type=int)
@@ -35,13 +33,22 @@ class BaseHandler(tornado.web.RequestHandler):
         if not hasattr(BaseHandler, "_fs"):
             _fs = gridfs.GridFS(self.db)
         return _fs
+
+    def get_user_locale(self):
+        if self.get_cookie("lang"):
+            return tornado.locale.get(self.get_cookie("lang"))
+        else:
+            return None
+
 class modules(object):
+
     def redirectCustom(self, url, template, **kwargs):
+        """ çalışır duruma getirilecek"""
         if url:
             self.redirect("%s" % (url))
         else:
             self.render(template, doc)
-
+        pass
 
 
 class MainHandler(BaseHandler):
@@ -65,10 +72,19 @@ class MainHandler(BaseHandler):
             self.render("database.html", db_list=db_list)
             self.write(db_list[0])
 
+class SetLang(BaseHandler):
+    def get(self,lang):
+        self.write(repr(self.request))
+        self.set_cookie("lang", lang)
+        if self.request.headers.get('Referer'):
+            self.redirect(self.request.headers.get('Referer'))
+        else:
+            self.redirect("/")
 
 class DBList(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        #self.get_user_locale()
         #self.write(repr(self.request))
         db_list = self.db.database_names()
         server_info = self.db.server_info()
@@ -93,7 +109,8 @@ class DBCopy(BaseHandler):
 class HostDBCopy(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        pass
+        self.render("hostdbcopy.html")
+
 
     @tornado.web.authenticated
     def post(self):
@@ -177,7 +194,7 @@ class DocList(BaseHandler):
         )
 
 
-class Doc(BaseHandler):
+class Doc(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname, collname, docid):
         db_conn = self.db[dbname]
@@ -348,9 +365,11 @@ urls = ([
     (r"/auth/logout/?", LogoutHandler),
 
     # Bu URL patternleri böyle olmadı sanki
-    (r"/", MainHandler),
+    (r"/", DBList),
     (r"/databases", DBList),
     (r"/hostdbcopy", HostDBCopy),
+    #(r"/jsonimport", JsonImport),
+    (r"/lng/([^/]+)", SetLang), #tr_TR , en_US ...
     (r"/([\_\.A-Za-z0-9]+)/drop", DBDrop),
     (r"/([\_\.A-Za-z0-9]+)", CollList),
     (r"/([\_\.A-Za-z0-9]+)/copy/([\_\.A-Za-z0-9]+)", DBCopy),
@@ -375,6 +394,7 @@ application = tornado.web.Application(urls, **settings)
 
 def main():
     tornado.options.parse_command_line()
+    tornado.locale.load_translations(os.path.join(os.path.dirname(__file__), "translations"))
     server = tornado.httpserver.HTTPServer(application)
     server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()

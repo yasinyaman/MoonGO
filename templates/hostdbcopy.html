@@ -1,0 +1,11 @@
+<h1>External DB Copy:</h1>
+ <form name="input" action="/hostdbcopy" method="post">
+ {% module xsrf_form_html() %}
+
+User: <input type="text" name="user"><br>
+Password: <input type="text" name="password"><br>
+Adress*: <input type="text" name="host"><br>
+Host DB*: <input type="text" name="hostdb"><br>
+Clone DB*: <input type="text" name="db"><br>
+<input type="submit" value="Copy">
+</form>

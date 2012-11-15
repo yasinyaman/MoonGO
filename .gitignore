@@ -25,3 +25,11 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+.idea/.name
+bin/
+include/
+lib/
+share/
+.Python
+.idea/

@@ -12,13 +12,12 @@ from bson import json_util
 import json
 from tornado.options import define, options
 import os
+import subprocess
 define("port", default=8877, type=int)
 
 
 class BaseHandler(tornado.web.RequestHandler):
-    def __init__(self):
-        self.mongo_path = "/srv/mongo/bin"
-
+    mongo_path = "/Users/doganaydin/mongodb/bin"
     def get_current_user(self):
         user = self.get_secure_cookie("current_user") or False
         if not user:
@@ -44,7 +43,7 @@ class BaseHandler(tornado.web.RequestHandler):
             return None
 
 class modules(object):
-    import subprocess
+
     def redirectCustom(self, url, template, **kwargs):
         """ Ã§alÄ±ÅŸÄ±r duruma getirilecek"""
         if url:
@@ -293,6 +292,20 @@ class DocEdit(BaseHandler):
         self.redirect("/%s/%s" % (dbname, collname))
 
 
+class DocImport(BaseHandler,modules):
+    def get(self):
+        self.write("<form method='post' enctype='multipart/form-data'><input type='file' name='data'><input type='submit'></form>")
+
+    def post(self):
+        dosya = self.request.files["data"][0]
+        with open(dosya["filename"],"w") as f:
+            f.write(dosya["body"])
+        self.write("%s" % str(self.import_db("test","deneme",dosya["filename"])))
+
+class DocExport(BaseHandler,modules):
+    def get(self):
+        self.write("%s" % str(self.export("test","deneme")))
+
 class RegisterHandler(BaseHandler):
     def get(self):
         if not self.current_user:
@@ -398,6 +411,8 @@ urls = ([
     (r"/", DBList),
     (r"/databases", DBList),
     (r"/hostdbcopy", HostDBCopy),
+    (r"/import",DocImport),
+    (r"/export",DocExport),
     #(r"/jsonimport", JsonImport),
     (r"/lng/([^/]+)", SetLang), #tr_TR , en_US ...
     (r"/([\_\.A-Za-z0-9]+)/drop", DBDrop),
@@ -416,7 +431,7 @@ urls = ([
     ),
     (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/edit",
         DocEdit
-    )
+    ),
 ])
 
 application = tornado.web.Application(urls, **settings)

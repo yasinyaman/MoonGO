@@ -157,24 +157,21 @@ class CollList(BaseHandler):
 class CollRename(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname, collrename):
-        db_conn = self.db[dbname]
-        doc_list = db_conn[collname].rename(collrename)
+        doc_list = self.db[dbname][collname].rename(collrename)
         self.redirect("/%s/%s" % (dbname, collrename))
 
 
 class CollDrop(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname):
-        db_conn = self.db[dbname]
-        db_conn.drop_collection(collname)
+        self.db[dbname].drop_collection(collname)
         self.redirect("/%s" % (dbname))
 
 
 class CollCreate(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname):
-        db_conn = self.db[dbname]
-        db_conn.create_collection(collname)
+        self.db[dbname].create_collection(collname)
         self.redirect("/%s" % (dbname))
 
 
@@ -197,8 +194,7 @@ class DocList(BaseHandler):
 class Doc(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname, collname, docid):
-        db_conn = self.db[dbname]
-        doc = db_conn[collname].find_one(
+        doc = self.db[dbname][collname].find_one(
             {"_id": pymongo.son_manipulator.ObjectId(docid)})
         formdoc = json.dumps(doc, default=json_util.default)
         self.render("document.html",
@@ -212,10 +208,9 @@ class Doc(BaseHandler, modules):
 class DocRemove(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname, docid):
-        db_conn = self.db[dbname]
         """doc = db_conn[collname].find_one(
         {"_id": pymongo.son_manipulator.ObjectId(docid)})"""
-        db_conn[collname].remove(
+        self.db[dbname][collname].remove(
             {"_id": pymongo.son_manipulator.ObjectId(docid)})
         #self.render("document.html",doc=doc,dbname=dbname,collname=collname)
         self.redirect("/%s/%s" % (dbname, collname))
@@ -230,21 +225,18 @@ class DocAdd(BaseHandler):
 
     @tornado.web.authenticated
     def post(self, dbname, collname):
-        db_conn = self.db[dbname]
         data = self.get_arguments("jsonData", False)
         save_data = json.loads(data[0], object_hook=json_util.object_hook)
         print save_data
-        db_conn[collname].save(save_data)
-        docid = db_conn[collname].find_one(save_data)["_id"]
-
+        self.db[dbname][collname].save(save_data)
+        docid = self.db[dbname][collname].find_one(save_data)["_id"]
         self.redirect("/%s/%s/%s" % (dbname, collname, docid))
 
 
 class DocEdit(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname, docid):
-        db_conn = self.db[dbname]
-        doc = db_conn[collname].find_one(
+        doc = self.db[dbname][collname].find_one(
             {"_id": pymongo.son_manipulator.ObjectId(docid)})
         formdoc = json.dumps(doc, default=json_util.default)
         self.render("documentedit.html",
@@ -256,10 +248,9 @@ class DocEdit(BaseHandler):
 
     @tornado.web.authenticated
     def post(self, dbname, collname, docid):
-        db_conn = self.db[dbname]
         data = self.get_arguments("jsonData", False)
         save_data = json.loads(data[0], object_hook=json_util.object_hook)
-        db_conn[collname].save(save_data)
+        self.db[dbname][collname].save(save_data)
         self.redirect("/%s/%s" % (dbname, collname))
 
 

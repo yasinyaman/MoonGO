@@ -53,7 +53,7 @@ class modules(object):
             self.render(template, doc)
         pass
 
-    def export(self,db,coll,host=None,port=None,user=None,password=None)
+    def export(self,db,coll,host=None,port=None,user=None,password=None):
         exp = "%s/mongoexport -d %s -c %s" % (BaseHandler.mongo_path,db,coll)
         if not db or not coll:
             return False
@@ -69,7 +69,7 @@ class modules(object):
         process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
         return process.communicate()[0]
 
-    def import(self,db,coll,data,host=None,port=None,user=None,password=None)
+    def import(self,db,coll,data,host=None,port=None,user=None,password=None):
         exp = "%s/mongoimport -d %s -c %s --file %s" % (BaseHandler.mongo_path,db,coll,data)
         if not db or not coll or not data:
             return False

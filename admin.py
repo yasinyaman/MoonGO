@@ -76,7 +76,6 @@ class MainHandler(BaseHandler):
 
 class SetLang(BaseHandler):
     def get(self,lang):
-        self.write(repr(self.request))
         self.set_cookie("lang", lang)
         if self.request.headers.get('Referer'):
             self.redirect(self.request.headers.get('Referer'))

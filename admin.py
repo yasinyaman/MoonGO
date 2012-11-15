@@ -43,7 +43,7 @@ class BaseHandler(tornado.web.RequestHandler):
 class modules(object):
 
     def redirectCustom(self, url, template, **kwargs):
-        """ çalışır duruma getirilecek"""
+        """ Ã§alÄ±ÅŸÄ±r duruma getirilecek"""
         if url:
             self.redirect("%s" % (url))
         else:
@@ -51,6 +51,8 @@ class modules(object):
         pass
 
 
+            
+        self.__output_results(cursor, out, batch_size)
 class MainHandler(BaseHandler):
     def get(self):
         db_list = self.db.database_names()
@@ -142,7 +144,7 @@ class HostDBCopy(BaseHandler):
         #self.write(host.get(host))
 
 
-#Koleksiyon işlemleri
+#Koleksiyon iÅŸlemleri
 class CollList(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
@@ -175,13 +177,16 @@ class CollCreate(BaseHandler):
         self.redirect("/%s" % (dbname))
 
 
-#Döküman işlemleri
+#DÃ¶kÃ¼man iÅŸlemleri
 class DocList(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname):
-        db_conn = self.db[dbname]
-        doc_list = db_conn[collname].find()
-        collstats = db_conn.command("collstats", collname)
+        spec={"mail" : "yasnyaman@gmail.com"}
+        fields=None
+        limit=3
+        skip=None
+        doc_list = self.db[dbname][collname].find(spec=spec, fields=fields, limit=limit)
+        collstats =self.db[dbname].command("collstats", collname)
         self.render(
             "documentlist.html",
             doc_list=doc_list,
@@ -230,6 +235,7 @@ class DocAdd(BaseHandler):
         print save_data
         self.db[dbname][collname].save(save_data)
         docid = self.db[dbname][collname].find_one(save_data)["_id"]
+
         self.redirect("/%s/%s/%s" % (dbname, collname, docid))
 
 
@@ -342,7 +348,7 @@ class LogoutHandler(BaseHandler):
 settings = dict({
     "template_path": os.path.join(os.path.dirname(__file__), "templates"),
     "static_path": os.path.join(os.path.dirname(__file__), "static"),
-    "cookie_secret": "ösaOPU)=()(/=+TY=0m552â§ªâªâª€0H/(=h0JKjô←←jhAHODF8*))",
+    "cookie_secret": "Ã¶saOPU)=()(/=+TY=0m552Ã¢Â§ÂªÃ¢ÂªÃ¢Âªâ‚¬0H/(=h0JKjÃ´â†�â†�jhAHODF8*))",
     "login_url": "/auth/login",
     "xsrf_cookies": False,
     "debug": True,
@@ -355,7 +361,7 @@ urls = ([
     (r"/auth/login/?", LoginHandler),
     (r"/auth/logout/?", LogoutHandler),
 
-    # Bu URL patternleri böyle olmadı sanki
+    # Bu URL patternleri bÃ¶yle olmadÄ± sanki
     (r"/", DBList),
     (r"/databases", DBList),
     (r"/hostdbcopy", HostDBCopy),

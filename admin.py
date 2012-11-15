@@ -16,6 +16,9 @@ define("port", default=8877, type=int)
 
 
 class BaseHandler(tornado.web.RequestHandler):
+    def __init__(self):
+        self.mongo_path = "/srv/mongo/bin"
+
     def get_current_user(self):
         user = self.get_secure_cookie("current_user") or False
         if not user:
@@ -41,7 +44,7 @@ class BaseHandler(tornado.web.RequestHandler):
             return None
 
 class modules(object):
-
+    import subprocess
     def redirectCustom(self, url, template, **kwargs):
         """ Ã§alÄ±ÅŸÄ±r duruma getirilecek"""
         if url:
@@ -50,6 +53,37 @@ class modules(object):
             self.render(template, doc)
         pass
 
+    def export(self,db,coll,host=None,port=None,user=None,password=None)
+        exp = "%s/mongoexport -d %s -c %s" % (BaseHandler.mongo_path,db,coll)
+        if not db or not coll:
+            return False
+        if host:
+            exp += " --host %s" % host
+        if port:
+            exp += " --port %s" % port
+        if user:
+            exp += " --user %s" % user
+        if password:
+            exp += " --password %s" % password
+
+        process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
+        return process.communicate()[0]
+
+    def import(self,db,coll,data,host=None,port=None,user=None,password=None)
+        exp = "%s/mongoimport -d %s -c %s --file %s" % (BaseHandler.mongo_path,db,coll,data)
+        if not db or not coll or not data:
+            return False
+        if host:
+            exp += " --host %s" % host
+        if port:
+            exp += " --port %s" % port
+        if user:
+            exp += " --user %s" % user
+        if password:
+            exp += " --password %s" % password
+
+        process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
+        return process.communicate()[0]
 
             
         self.__output_results(cursor, out, batch_size)

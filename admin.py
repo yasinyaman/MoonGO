@@ -329,7 +329,7 @@ class DocImport(BaseHandler,modules):
         dosya = self.request.files["data"][0]
         with open(dosya["filename"],"w") as f:
             f.write(dosya["body"])
-        self.write("%s <br>%s<br> %s" % (self.import_db(dbname, collname, dosya["filename"]), dbname, collname))
+        self.write("%s" % (self.import_db(dbname, collname, dosya["filename"]))
 
 class DocExport(BaseHandler,modules):
     def get(self, dbname, collname):

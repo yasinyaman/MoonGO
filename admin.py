@@ -84,6 +84,27 @@ class modules(object):
         process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
         return process.communicate()[0]
 
+    def db_list(self):
+        db_list = self.db.database_names()
+        if db_list:
+            return db_list
+        else:
+            return False
+
+    def database_control(self, dbname):
+        return dbname in self.db_list()
+
+    def collections_list(self, dbname):
+        collection_list = self.db[dbname].collection_names()
+        if collection_list:
+            return collection_list
+        else:
+            return False
+
+    def collection_control(self, dbname, collname):
+        return collname in self.collections_list(dbname)
+
+
             
         self.__output_results(cursor, out, batch_size)
 class MainHandler(BaseHandler):
@@ -115,12 +136,12 @@ class SetLang(BaseHandler):
         else:
             self.redirect("/")
 
-class DBList(BaseHandler):
+class DBList(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self):
         #self.get_user_locale()
         #self.write(repr(self.request))
-        db_list = self.db.database_names()
+        db_list = self.db_list()
         server_info = self.db.server_info()
         #self.write(self.db.serverStatus())
         self.render("database.html", db_list=db_list, server_info=server_info)
@@ -177,10 +198,10 @@ class HostDBCopy(BaseHandler):
 
 
 #Koleksiyon iÅŸlemleri
-class CollList(BaseHandler):
+class CollList(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname):
-        collection_list = self.db[dbname].collection_names()
+        collection_list = self.collections_list(dbname)
         self.render(
             "collection.html",
             collection_list=collection_list,
@@ -188,11 +209,14 @@ class CollList(BaseHandler):
         )
 
 
+
+
 class CollRename(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname, collrename):
         doc_list = self.db[dbname][collname].rename(collrename)
         self.redirect("/%s/%s" % (dbname, collrename))
+
 
 
 class CollDrop(BaseHandler):
@@ -210,22 +234,29 @@ class CollCreate(BaseHandler):
 
 
 #DÃ¶kÃ¼man iÅŸlemleri
-class DocList(BaseHandler):
+class DocList(BaseHandler,modules):
     @tornado.web.authenticated
     def get(self, dbname, collname):
-        spec=None
-        fields=None
-        limit=10
-        skip=None
-        doc_list = self.db[dbname][collname].find(spec=spec, fields=fields, limit=limit)
-        collstats =self.db[dbname].command("collstats", collname)
-        self.render(
-            "documentlist.html",
-            doc_list=doc_list,
-            dbname=dbname,
-            collname=collname,
-            collstats=collstats
-        )
+        """Bu kontrolü decoder ile yapmak lazım"""
+        if self.database_control(dbname):
+            if self.collection_control(dbname, collname):
+                spec=None
+                fields=None
+                limit=10
+                skip=None
+                doc_list = self.db[dbname][collname].find(spec=spec, fields=fields, limit=limit)
+                collstats =self.db[dbname].command("collstats", collname)
+                self.render(
+                    "documentlist.html",
+                    doc_list=doc_list,
+                    dbname=dbname,
+                    collname=collname,
+                    collstats=collstats
+                )
+            else: 
+                self.write("Not found Colletion")
+        else:
+            self.write("Not found Database")
 
 
 class Doc(BaseHandler, modules):
@@ -298,7 +329,7 @@ class DocImport(BaseHandler,modules):
         dosya = self.request.files["data"][0]
         with open(dosya["filename"],"w") as f:
             f.write(dosya["body"])
-        self.write("%s" % str(self.import_db(dbname, collname, dosya["filename"])))
+        self.write("%s <br>%s<br> %s" % (self.import_db(dbname, collname, dosya["filename"]), dbname, collname))
 
 class DocExport(BaseHandler,modules):
     def get(self, dbname, collname):
@@ -407,22 +438,22 @@ urls = ([
 
     # Bu URL patternleri bÃ¶yle olmadÄ± sanki
     (r"/", DBList),
-    (r"/databases", DBList),
-    (r"/hostdbcopy", HostDBCopy),
-    (r"/([^/]+)/([^/]+)/import",DocImport),
-    (r"/([^/]+)/([^/]+)/export",DocExport),
-    (r"/lng/([^/]+)", SetLang), #tr_TR , en_US ...
-    (r"/([^/]+)/drop", DBDrop),
-    (r"/([^/]+)", CollList),
-    (r"/([^/]+)/copy/([^/]+)", DBCopy),
-    (r"/([^/]+)/([^/]+)/create", CollCreate),
-    (r"/([^/]+)/([^/]+)/drop", CollDrop),
-    (r"/([^/]+)/([^/]+)/rename/([^/]+)", CollRename),
-    (r"/([^/]+)/([^/]+)", DocList),
-    (r"/([^/]+)/([^/]+)/add", DocAdd),
-    (r"/([^/]+)/([^/]+)/([^/]+)", Doc),
-    (r"/([^/]+)/([^/]+)/([^/]+)/remove", DocRemove),
-    (r"/([^/]+)/([^/]+)/([^/]+)/edit", DocEdit)
+    (r"/databases/?", DBList),
+    (r"/hostdbcopy/?", HostDBCopy),
+    (r"/([^/]+)/([^/]+)/import/?",DocImport),
+    (r"/([^/]+)/([^/]+)/export/?",DocExport),
+    (r"/lng/([^/]+)/?", SetLang), #tr_TR , en_US ...
+    (r"/([^/]+)/drop/?", DBDrop),
+    (r"/([^/]+)/?", CollList),
+    (r"/([^/]+)/copy/([^/]+)/?", DBCopy),
+    (r"/([^/]+)/([^/]+)/create/?", CollCreate),
+    (r"/([^/]+)/([^/]+)/drop/?", CollDrop),
+    (r"/([^/]+)/([^/]+)/rename/([^/]+)/?", CollRename),
+    (r"/([^/]+)/([^/]+)/?", DocList),
+    (r"/([^/]+)/([^/]+)/add/?", DocAdd),
+    (r"/([^/]+)/([^/]+)/([^/]+)/?", Doc),
+    (r"/([^/]+)/([^/]+)/([^/]+)/remove/?", DocRemove),
+    (r"/([^/]+)/([^/]+)/([^/]+)/edit/?", DocEdit)
 ])
 application = tornado.web.Application(urls, **settings)
 

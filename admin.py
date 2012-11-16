@@ -17,7 +17,7 @@ define("port", default=8877, type=int)
 
 
 class BaseHandler(tornado.web.RequestHandler):
-    mongo_path = "/Users/doganaydin/mongodb/bin"
+    mongo_path = "/usr/bin"
     def get_current_user(self):
         user = self.get_secure_cookie("current_user") or False
         if not user:
@@ -213,9 +213,9 @@ class CollCreate(BaseHandler):
 class DocList(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname):
-        spec={"mail" : "yasnyaman@gmail.com"}
+        spec=None
         fields=None
-        limit=3
+        limit=10
         skip=None
         doc_list = self.db[dbname][collname].find(spec=spec, fields=fields, limit=limit)
         collstats =self.db[dbname].command("collstats", collname)
@@ -233,10 +233,8 @@ class Doc(BaseHandler, modules):
     def get(self, dbname, collname, docid):
         doc = self.db[dbname][collname].find_one(
             {"_id": pymongo.son_manipulator.ObjectId(docid)})
-        formdoc = json.dumps(doc, default=json_util.default)
         self.render("document.html",
             doc=doc,
-            formdoc=formdoc,
             dbname=dbname,
             collname=collname
         )
@@ -293,18 +291,18 @@ class DocEdit(BaseHandler):
 
 
 class DocImport(BaseHandler,modules):
-    def get(self):
+    def get(self, dbname, collname):
         self.write("<form method='post' enctype='multipart/form-data'><input type='file' name='data'><input type='submit'></form>")
 
-    def post(self):
+    def post(self, dbname, collname):
         dosya = self.request.files["data"][0]
         with open(dosya["filename"],"w") as f:
             f.write(dosya["body"])
-        self.write("%s" % str(self.import_db("test","deneme",dosya["filename"])))
+        self.write("%s" % str(self.import_db(dbname, collname, dosya["filename"])))
 
 class DocExport(BaseHandler,modules):
-    def get(self):
-        self.write("%s" % str(self.export("test","deneme")))
+    def get(self, dbname, collname):
+        self.write("%s" % (str(self.export(dbname,collname))))
 
 class RegisterHandler(BaseHandler):
     def get(self):
@@ -411,29 +409,21 @@ urls = ([
     (r"/", DBList),
     (r"/databases", DBList),
     (r"/hostdbcopy", HostDBCopy),
-    (r"/import",DocImport),
-    (r"/export",DocExport),
-    #(r"/jsonimport", JsonImport),
+    (r"/([^/]+)/([^/]+)/import",DocImport),
+    (r"/([^/]+)/([^/]+)/export",DocExport),
     (r"/lng/([^/]+)", SetLang), #tr_TR , en_US ...
-    (r"/([\_\.A-Za-z0-9]+)/drop", DBDrop),
-    (r"/([\_\.A-Za-z0-9]+)", CollList),
-    (r"/([\_\.A-Za-z0-9]+)/copy/([\_\.A-Za-z0-9]+)", DBCopy),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/create", CollCreate),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/drop", CollDrop),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/rename/([\_\.A-Za-z0-9]+)",
-        CollRename
-    ),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)", DocList),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/add", DocAdd),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)", Doc),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/remove",
-        DocRemove
-    ),
-    (r"/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/([\_\.A-Za-z0-9]+)/edit",
-        DocEdit
-    ),
+    (r"/([^/]+)/drop", DBDrop),
+    (r"/([^/]+)", CollList),
+    (r"/([^/]+)/copy/([^/]+)", DBCopy),
+    (r"/([^/]+)/([^/]+)/create", CollCreate),
+    (r"/([^/]+)/([^/]+)/drop", CollDrop),
+    (r"/([^/]+)/([^/]+)/rename/([^/]+)", CollRename),
+    (r"/([^/]+)/([^/]+)", DocList),
+    (r"/([^/]+)/([^/]+)/add", DocAdd),
+    (r"/([^/]+)/([^/]+)/([^/]+)", Doc),
+    (r"/([^/]+)/([^/]+)/([^/]+)/remove", DocRemove),
+    (r"/([^/]+)/([^/]+)/([^/]+)/edit", DocEdit)
 ])
-
 application = tornado.web.Application(urls, **settings)
 
 

@@ -13,6 +13,7 @@ import json
 from tornado.options import define, options
 import os
 import subprocess
+import functools
 define("port", default=8877, type=int)
 
 
@@ -91,8 +92,7 @@ class modules(object):
         else:
             return False
 
-    def database_control(self, dbname):
-        return dbname in self.db_list()
+
 
     def collections_list(self, dbname):
         collection_list = self.db[dbname].collection_names()
@@ -101,12 +101,27 @@ class modules(object):
         else:
             return False
 
-    def collection_control(self, dbname, collname):
-        return collname in self.collections_list(dbname)
-
-
-            
         self.__output_results(cursor, out, batch_size)
+
+
+def database_control(method):
+    @functools.wraps(method)
+    def control(self,dbname,collname):
+        if dbname not in self.db.database_names():
+            self.write("HATA")
+        else:
+            return method(self,dbname,collname)
+    return control
+
+def collection_control(method):
+    @functools.wraps(method)
+    def control(self,dbname,collname):
+        if collname not in self.db[dbname].collection_names():
+            self.write("HATA")
+        else:
+            return method(self,dbname,collname)
+    return control
+
 class MainHandler(BaseHandler):
     def get(self):
         db_list = self.db.database_names()
@@ -234,30 +249,24 @@ class CollCreate(BaseHandler):
 
 
 #DÃ¶kÃ¼man iÅŸlemleri
-class DocList(BaseHandler,modules):
+class DocList(BaseHandler):
     @tornado.web.authenticated
+    @database_control
+    @collection_control
     def get(self, dbname, collname):
-        """Bu kontrolü decoder ile yapmak lazım"""
-        if self.database_control(dbname):
-            if self.collection_control(dbname, collname):
-                spec=None
-                fields=None
-                limit=10
-                skip=None
-                doc_list = self.db[dbname][collname].find(spec=spec, fields=fields, limit=limit)
-                collstats =self.db[dbname].command("collstats", collname)
-                self.render(
-                    "documentlist.html",
-                    doc_list=doc_list,
-                    dbname=dbname,
-                    collname=collname,
-                    collstats=collstats
-                )
-            else: 
-                self.write("Not found Colletion")
-        else:
-            self.write("Not found Database")
-
+        spec=None
+        fields=None
+        limit=10
+        skip=None
+        doc_list = self.db[dbname][collname].find(spec=spec, fields=fields, limit=limit)
+        collstats =self.db[dbname].command("collstats", collname)
+        self.render(
+            "documentlist.html",
+            doc_list=doc_list,
+            dbname=dbname,
+            collname=collname,
+            collstats=collstats
+        )
 
 class Doc(BaseHandler, modules):
     @tornado.web.authenticated
@@ -329,7 +338,7 @@ class DocImport(BaseHandler,modules):
         dosya = self.request.files["data"][0]
         with open(dosya["filename"],"w") as f:
             f.write(dosya["body"])
-        self.write("%s" % (self.import_db(dbname, collname, dosya["filename"]))
+        self.write("%s" % (self.import_db(dbname, collname, dosya["filename"])))
 
 class DocExport(BaseHandler,modules):
     def get(self, dbname, collname):

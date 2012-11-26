@@ -30,9 +30,10 @@ class BaseHandler(tornado.web.RequestHandler):
         return self.settings["db"]
 
     def dbcon(self,database):
-        con = pymongo.Connection("alex.mongohq.com",10035)
-        authcon = con[database]
-        authcon.authenticate("mongoRemote","x123x")
+        coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
+        con = pymongo.Connection(coninfo["host"],int(coninfo["port"]))
+        authcon = con[coninfo["database"]]
+        authcon.authenticate(coninfo["username"],coninfo["password"])
         return authcon
 
     @property

@@ -25,17 +25,15 @@ class BaseHandler(tornado.web.RequestHandler):
             return None
         return tornado.escape.json_decode(user)
 
-    #@property
+    @property
     def db(self):
-        if not hasattr(BaseHandler, "_db"):
-            _db = pymongo.Connection()
-        return _db
+        return self.settings["db"]
 
     def dbcon(self,database):
         coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
-        con = pymongo.Connection(str(coninfo["host"]),coninfo["port"])
+        con = pymongo.Connection(str(coninfo["host"]),int(coninfo["port"]))
         authcon = con[coninfo["database"]]
-        db = authcon.con.authenticate("mongoRemote","x123x")
+        db = authcon.authenticate("mongoRemote","x123x")
         return db
 
     @property
@@ -121,6 +119,10 @@ class modules(object):
         self.__output_results(cursor, out, batch_size)
 
 
+    def upload_to_gridfs(self,db,file={}):
+        pass
+
+
 def database_control(method):
     @functools.wraps(method)
     def control(self,dbname,collname):
@@ -190,7 +192,7 @@ class UserDbAdd(BaseHandler):
                 password=uri["password"],
                 port=uri["nodelist"][0][1]
             )
-        elif not self.get_argument("name", False) or self.get_argument("uri", False):
+        elif not self.get_argument("name", False) or self.get_argument("uri", False) or self.get_argument("host",False):
             self.write("HATA")
         self.sysdb.moongo_sys.userdbs.save(databaseinfo)
         self.redirect("/")
@@ -485,7 +487,8 @@ settings = dict({
     "login_url": "/auth/login",
     "xsrf_cookies": False,
     "debug": True,
-    "site_url": "http://xxx.com"
+    "site_url": "http://xxx.com",
+    "db": pymongo.Connection()
 })
 
 urls = ([

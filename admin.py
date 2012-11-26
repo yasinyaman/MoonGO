@@ -120,7 +120,17 @@ class modules(object):
 
 
     def upload_to_gridfs(self,db,file={}):
-        pass
+        try:
+            fs = gridfs.GridFS(db)
+            with fs.new_file(filename=file["filename"],user=self.current_user["user_name"]) as f:
+                f.write(file["body"])
+            return "OK"
+        except:
+            return "HATA"
+
+    def get_file(self,db,data={}):
+        fs = gridfs.GridFS(db)
+        return fs.get_last_version(data).read()
 
 
 def database_control(method):

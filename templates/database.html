@@ -1,23 +1,16 @@
 <a href="/lng/tr_TR">tr_TR</a>
 <a href="/lng/en_US">en_US</a>
-
-<h1>{{ _("Server Info") }}</h1>
-Server Info : {{server_info["sysInfo"]}} <br/>
-Version : {{server_info["version"]}} <br/>
-Version Array : {{server_info["versionArray"]}} <br/>
-Debug : {{server_info["debug"]}} <br/>
-Max Bson Object Size : {{server_info["maxBsonObjectSize"]}} <br/>
-git Version : {{server_info["gitVersion"]}} 
-
-
+<a href="/userdbadd"><strong>Database Add</strong></a>
 <h1>{{ _("Copy From") }}</h1>
 <strong>Local DB Copy:</strong> URL path "/[maindb]/copy/[todb]"<br/>
 <a href="/hostdbcopy"><strong>External DB Copy</strong></a>
 
 <h1>{{ _("Databases") }}</h1>
-<ul>
+<ul>  {% if db_list %}
       {% for dbname in db_list %}
      <li> <a href="/{{dbname}}"> {{dbname}}</a> | <a href="/{{dbname}}/drop"> Drop</a> </li>
       {% end %}
-
+      {% else %}
+      Not found database
+      {% end %}
  </ul>

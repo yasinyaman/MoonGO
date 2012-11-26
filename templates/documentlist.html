@@ -6,7 +6,13 @@
 {{collstats}} <br/>
 
 
-
+ <form action="/{{dbname}}/{{collname}}" method="get">
+ {% module xsrf_form_html() %}
+ <textarea rows="10%" cols="80%" name="queryy">{"query":{},"fields":{},"sort":{},"limit":{},"options":{"explain":True}}
+ </textarea>
+ <span spellcheck="false" contenteditable="true" data-type="number" data-name="query">10</span>
+<input type="submit" value="Find">
+</form>
 <h1>Documents</h1>
 <ul>
       {% for doc in doc_list %}

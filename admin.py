@@ -25,11 +25,18 @@ class BaseHandler(tornado.web.RequestHandler):
             return None
         return tornado.escape.json_decode(user)
 
-    @property
-    def db(self):
+    #@property
+    def db(self, host, port):
         if not hasattr(BaseHandler, "_db"):
-            _db = pymongo.Connection()
+            _db = pymongo.Connection(host, port)
         return _db
+
+
+    @property
+    def sysdb(self):
+        if not hasattr(BaseHandler, "_sysdb"):
+            _sysdb = pymongo.Connection("localhost")
+        return _sysdb
 
     @property
     def fs(self):
@@ -52,7 +59,16 @@ class modules(object):
         else:
             self.render(template, doc)
         pass
-
+    def dbcon(self,database):
+        coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
+        conn = self.db(coninfo["host"],coninfo["port"])
+        #conn = self.db("ddd","ddws")
+        conn[coninfo["database"]]
+        if coninfo["host"] == "localhost" or "127.0.0.1":
+            pass
+        else:
+            conn.authenticate(coninfo["username"], coninfo["password"])
+        return conn
     def export(self,db,coll,host=None,port=None,user=None,password=None):
         exp = "%s/mongoexport -d %s -c %s" % (BaseHandler.mongo_path,db,coll)
         if not db or not coll:
@@ -85,8 +101,11 @@ class modules(object):
         process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
         return process.communicate()[0]
 
+
     def db_list(self):
-        db_list = self.db.database_names()
+        db_list = []
+        for i in self.sysdb.moongo_sys.userdbs.find({"user": self.current_user["name"]}):
+            db_list.append(i["database"])
         if db_list:
             return db_list
         else:
@@ -94,8 +113,8 @@ class modules(object):
 
 
 
-    def collections_list(self, dbname):
-        collection_list = self.db[dbname].collection_names()
+    def collections_list(self, databasename, port):
+        collection_list = self.db(databsename, port).collection_names()
         if collection_list:
             return collection_list
         else:
@@ -122,8 +141,12 @@ def collection_control(method):
             return method(self,dbname,collname)
     return control
 
+
+
+
 class MainHandler(BaseHandler):
     def get(self):
+
         db_list = self.db.database_names()
         for dbnamess in db_list:
             print "Database :" + dbnamess
@@ -143,6 +166,38 @@ class MainHandler(BaseHandler):
             self.render("database.html", db_list=db_list)
             self.write(db_list[0])
 
+
+class UserDbAdd(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        self.render("userdbadd.html")
+    @tornado.web.authenticated
+    def post(self):
+        if self.get_argument("name", False):
+            databaseinfo = dict(
+                user=self.current_user["name"],
+                database=self.get_argument("name", False),
+                host=self.get_argument("host", False),
+                username = self.get_argument("username", False),
+                password=self.get_argument("password", False),
+                port=self.get_argument("port", 27017)
+            )
+        elif self.get_argument("uri", False):
+            uri = pymongo.uri_parser.parse_uri(self.get_argument("uri", False), default_port=27017)
+            databaseinfo = dict(
+                user=self.current_user["name"],
+                database=uri["database"],
+                host=uri["nodelist"][0][0],
+                username = uri["username"],
+                password=uri["password"],
+                port=uri["nodelist"][0][1]
+            )
+        elif not self.get_argument("name", False) or self.get_argument("uri", False):
+            self.write("HATA")
+        self.sysdb.moongo_sys.userdbs.save(databaseinfo)
+        self.redirect("/")
+
+
 class SetLang(BaseHandler):
     def get(self,lang):
         self.set_cookie("lang", lang)
@@ -154,12 +209,8 @@ class SetLang(BaseHandler):
 class DBList(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self):
-        #self.get_user_locale()
-        #self.write(repr(self.request))
         db_list = self.db_list()
-        server_info = self.db.server_info()
-        #self.write(self.db.serverStatus())
-        self.render("database.html", db_list=db_list, server_info=server_info)
+        self.render("database.html",db_list=db_list)
 
 
 class DBDrop(BaseHandler):
@@ -216,7 +267,7 @@ class HostDBCopy(BaseHandler):
 class CollList(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname):
-        collection_list = self.collections_list(dbname)
+        collection_list = self.dbcon(dbname).collections_list(dbname)
         self.render(
             "collection.html",
             collection_list=collection_list,
@@ -251,8 +302,8 @@ class CollCreate(BaseHandler):
 #DÃ¶kÃ¼man iÅŸlemleri
 class DocList(BaseHandler):
     @tornado.web.authenticated
-    @database_control
-    @collection_control
+    #@database_control
+    #@collection_control
     def get(self, dbname, collname):
         spec=None
         fields=None
@@ -390,7 +441,7 @@ class RegisterHandler(BaseHandler):
             password=bcrypt.hashpw(password, bcrypt.gensalt()),
             mail=mail
         )
-        self.db.moongo_sys.users.save(user)
+        self.sysdb.moongo_sys.users.save(user)
         self.redirect("/auth/login")
 
 
@@ -405,7 +456,7 @@ class LoginHandler(BaseHandler):
         user_name = self.get_argument("user_name", False)
         password = self.get_argument("password", False)
         if user_name and password:
-            user = self.db.moongo_sys.users.find_one({"user_name": user_name},
+            user = self.sysdb.moongo_sys.users.find_one({"user_name": user_name},
                                                      {"_id": 0})
             if user:
                 crypt_pass = bcrypt.hashpw(password, user["password"])
@@ -449,6 +500,7 @@ urls = ([
     (r"/", DBList),
     (r"/databases/?", DBList),
     (r"/hostdbcopy/?", HostDBCopy),
+    (r"/userdbadd/?", UserDbAdd),
     (r"/([^/]+)/([^/]+)/import/?",DocImport),
     (r"/([^/]+)/([^/]+)/export/?",DocExport),
     (r"/lng/([^/]+)/?", SetLang), #tr_TR , en_US ...

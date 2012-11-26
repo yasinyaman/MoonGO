@@ -26,11 +26,17 @@ class BaseHandler(tornado.web.RequestHandler):
         return tornado.escape.json_decode(user)
 
     #@property
-    def db(self, host, port):
+    def db(self):
         if not hasattr(BaseHandler, "_db"):
-            _db = pymongo.Connection(host, port)
+            _db = pymongo.Connection()
         return _db
 
+    def dbcon(self,database):
+        coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
+        conn = pymongo.Connection(coninfo["host"],coninfo["port"])
+        conn.authenticate(coninfo["username"], coninfo["password"])
+        conn[coninfo["database"]]
+        return conn
 
     @property
     def sysdb(self):
@@ -59,16 +65,7 @@ class modules(object):
         else:
             self.render(template, doc)
         pass
-    def dbcon(self,database):
-        coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
-        conn = self.db(coninfo["host"],coninfo["port"])
-        #conn = self.db("ddd","ddws")
-        conn[coninfo["database"]]
-        if coninfo["host"] == "localhost" or "127.0.0.1":
-            pass
-        else:
-            conn.authenticate(coninfo["username"], coninfo["password"])
-        return conn
+
     def export(self,db,coll,host=None,port=None,user=None,password=None):
         exp = "%s/mongoexport -d %s -c %s" % (BaseHandler.mongo_path,db,coll)
         if not db or not coll:
@@ -113,8 +110,9 @@ class modules(object):
 
 
 
-    def collections_list(self, databasename, port):
-        collection_list = self.db(databsename, port).collection_names()
+    def collections_list(self, dbname):
+        dbd = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"], "database":dbname})
+        collection_list = self.dbcon(dbname).collection_names()
         if collection_list:
             return collection_list
         else:
@@ -216,8 +214,18 @@ class DBList(BaseHandler, modules):
 class DBDrop(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
-        self.db.drop_database(dbname)
-        self.redirect("/")
+        coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": dbname})
+        print coninfo
+        conn = pymongo.Connection(str(coninfo["host"]),coninfo["port"])
+        print conn
+        print coninfo["username"]
+        print coninfo["password"]
+        conn.authenticate(str(coninfo["username"]), str(coninfo["password"]))
+        print conn
+        conn[coninfo["database"]]
+        return conn
+       # self.db.drop_database(dbname)
+        #self.redirect("/")
 
 
 class DBCopy(BaseHandler):
@@ -267,7 +275,7 @@ class HostDBCopy(BaseHandler):
 class CollList(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname):
-        collection_list = self.dbcon(dbname).collections_list(dbname)
+        collection_list = self.collections_list(dbname)
         self.render(
             "collection.html",
             collection_list=collection_list,

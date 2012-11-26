@@ -31,7 +31,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def dbcon(self,database):
         con = pymongo.Connection("alex.mongohq.com",10035)
-        authcon = con[coninfo["database"]]
+        authcon = con[database]
         authcon.authenticate("mongoRemote","x123x")
         return authcon
 

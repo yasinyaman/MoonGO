@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
+import gridfs
 import tornado.web
 import tornado.httpserver
 import tornado.ioloop
@@ -120,17 +121,14 @@ class modules(object):
 
 
     def upload_to_gridfs(self,db,file={}):
-        try:
-            fs = gridfs.GridFS(db)
-            with fs.new_file(filename=file["filename"],user=self.current_user["user_name"]) as f:
-                f.write(file["body"])
-            return "OK"
-        except:
-            return "HATA"
-
-    def get_file(self,db,data={}):
         fs = gridfs.GridFS(db)
-        return fs.get_last_version(data).read()
+        with fs.new_file(filename=file["filename"],user=self.current_user["user_name"],content_type=file["content_type"]) as f:
+            f.write(file["body"])
+
+
+    def get_file(self,db,filename):
+        fs = gridfs.GridFS(db)
+        return fs.get_last_version(filename)
 
 
 def database_control(method):
@@ -405,6 +403,38 @@ class DocExport(BaseHandler,modules):
     def get(self, dbname, collname):
         self.write("%s" % (str(self.export(dbname,collname))))
 
+
+class Yukle(BaseHandler,modules):
+    def get(self):
+        self.write("""
+            <form method="post" enctype="multipart/form-data">
+                <input type="file" name="gfs">
+                <input type="submit">
+            </form>
+        """)
+
+    def post(self):
+        file = self.request.files["gfs"][0]
+        self.write(file["filename"])
+        print self.upload_to_gridfs(self.db.files,file=file)
+
+
+class Indir(BaseHandler,modules):
+    def get(self):
+        self.write("""
+            <form method="post">
+                <input type="text" name="gfs">
+                <input type="submit">
+            </form>
+        """)
+
+    def post(self):
+        file = self.get_argument("gfs",None)
+        gfs = self.get_file(self.db.files,file)
+        self.set_header('Content-Disposition', 'attachment; filename=%s' % gfs.name)
+        self.write(gfs.read())
+
+
 class RegisterHandler(BaseHandler):
     def get(self):
         if not self.current_user:
@@ -512,6 +542,8 @@ urls = ([
     (r"/databases/?", DBList),
     (r"/hostdbcopy/?", HostDBCopy),
     (r"/userdbadd/?", UserDbAdd),
+    (r"/yukle/?",Yukle),
+    (r"/indir/?",Indir),
     (r"/([^/]+)/([^/]+)/import/?",DocImport),
     (r"/([^/]+)/([^/]+)/export/?",DocExport),
     (r"/lng/([^/]+)/?", SetLang), #tr_TR , en_US ...

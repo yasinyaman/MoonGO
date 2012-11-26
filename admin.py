@@ -33,10 +33,10 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def dbcon(self,database):
         coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
-        conn = pymongo.Connection(coninfo["host"],coninfo["port"])
-        conn.authenticate(coninfo["username"], coninfo["password"])
-        conn[coninfo["database"]]
-        return conn
+        con = pymongo.Connection(str(coninfo["host"]),coninfo["port"])
+        authcon = con[coninfo["database"]]
+        db = authcon.con.authenticate("mongoRemote","x123x")
+        return db
 
     @property
     def sysdb(self):
@@ -214,18 +214,8 @@ class DBList(BaseHandler, modules):
 class DBDrop(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
-        coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": dbname})
-        print coninfo
-        conn = pymongo.Connection(str(coninfo["host"]),coninfo["port"])
-        print conn
-        print coninfo["username"]
-        print coninfo["password"]
-        conn.authenticate(str(coninfo["username"]), str(coninfo["password"]))
-        print conn
-        conn[coninfo["database"]]
-        return conn
-       # self.db.drop_database(dbname)
-        #self.redirect("/")
+        self.db.drop_database(dbname)
+        self.redirect("/")
 
 
 class DBCopy(BaseHandler):
@@ -275,7 +265,7 @@ class HostDBCopy(BaseHandler):
 class CollList(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname):
-        collection_list = self.collections_list(dbname)
+        collection_list = self.dbcon(dbname)
         self.render(
             "collection.html",
             collection_list=collection_list,

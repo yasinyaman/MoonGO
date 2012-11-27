@@ -438,6 +438,28 @@ class Indir(BaseHandler,modules):
         self.write(gfs.read())
 
 
+class SystemJS(BaseHandler):
+    def get(self):
+        self.write("""
+            <form method="post">
+                <input type="text" name="name"><br>
+                <input type="hidden" name="dbname" value="deneme">
+                <textarea name="js" cols="500" rows="500"></textarea><br>
+                <input type="submit">
+            </form>
+        """)
+
+    def post(self):
+        # Listeleme self.db[dbname].system_js.list()
+        name = self.get_argument("name",None)
+        dbname = self.get_argument("dbname",None)
+        js = self.get_argument("js",None)
+        if name and dbname and js:
+            self.db[dbname].system_js[name] = js
+            self.write("%s function is ready." % name)
+        else:
+            self.write("Check form values")
+
 class RegisterHandler(BaseHandler):
     def get(self):
         if not self.current_user:
@@ -547,6 +569,7 @@ urls = ([
     (r"/userdbadd/?", UserDbAdd),
     (r"/yukle/?",Yukle),
     (r"/indir/?",Indir),
+    (r"/js/?",SystemJS),
     (r"/([^/]+)/([^/]+)/import/?",DocImport),
     (r"/([^/]+)/([^/]+)/export/?",DocExport),
     (r"/lng/([^/]+)/?", SetLang), #tr_TR , en_US ...

@@ -12,6 +12,7 @@ from tornado.options import define, options
 import os
 
 from handlers import *
+from user import *
 
 define("port", default=8877, type=int)
 

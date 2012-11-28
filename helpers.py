@@ -16,7 +16,11 @@ class BaseHandler(tornado.web.RequestHandler):
             return None
         return tornado.escape.json_decode(user)
 
-    def dbcon(self,database):
+    @property
+    def sysdb(self):
+        return self.settings["sysdb"]
+
+    def dbcon(self,database, state = 1):
         coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
         con = pymongo.Connection(coninfo["host"],int(coninfo["port"]))
         authcon = con[coninfo["database"]]
@@ -24,21 +28,10 @@ class BaseHandler(tornado.web.RequestHandler):
             authcon.authenticate(coninfo["username"],coninfo["password"])
         else:
             pass
-        return authcon
-
-    @property
-    def sysdb(self):
-        return self.settings["sysdb"]
-
-    def rootdb(self,database):
-        coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
-        con = pymongo.Connection(coninfo["host"],int(coninfo["port"]))
-        authcon = con
-        if not coninfo["host"] == "localhost":
-            authcon.authenticate(coninfo["root_user_name"],coninfo["root_password"])
-        else:
-            pass
-        return authcon
+        if state == 1:
+            return authcon
+        elif state == 0:
+            return con
 
     @property
     def fs(self,database):
@@ -107,7 +100,6 @@ class modules(object):
 
 
     def collections_list(self, dbname):
-        dbd = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"], "database":dbname})
         collection_list = self.dbcon(dbname).collection_names()
         if collection_list:
             return collection_list

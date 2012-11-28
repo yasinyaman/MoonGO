@@ -83,14 +83,15 @@ class DBList(BaseHandler, modules):
 class DBDrop(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
-        self.db.drop_database(dbname)
+        self.dbcon(dbname, 0).drop_database(dbname)
+        self.sysdb.moongo_sys.userdbs.remove({"datbase":dbname, "user":self.current_user["name"]})
         self.redirect("/")
 
 
 class DBCopy(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, to_dbname):
-        self.db.copy_database(dbname, to_dbname)
+        self.dbcon(dbname, 0).copy_database(dbname, to_dbname)
         self.redirect("/%s" % (to_dbname))
 
 
@@ -113,7 +114,7 @@ class HostDBCopy(BaseHandler):
             password = False
 
         if user and password:
-            self.db.copy_database(
+            self.dbcon(dbname, 0).copy_database(
                 hostdb["hostdb"][0],
                 hostdb["db"][0],
                 hostdb["host"][0],

@@ -2,6 +2,7 @@ from helpers import BaseHandler
 import bcrypt
 import tornado.web
 import tornado.escape
+import time
 
 class RegisterHandler(BaseHandler):
     def get(self):
@@ -47,9 +48,12 @@ class RegisterHandler(BaseHandler):
             name=name,
             user_name=user_name,
             password=bcrypt.hashpw(password, bcrypt.gensalt()),
-            mail=mail
+            mail=mail,
+            root_user_name = bcrypt.hashpw(user_name,bcrypt.gensalt()),
+            root_password = bcrypt.hashpw(password,bcrypt.gensalt())+str(time.time())
         )
         self.sysdb.moongo_sys.users.save(user)
+        self.sysdb.admin.add_user(user["root_user_name"],user["root_password"])
         self.redirect("/auth/login")
 
 

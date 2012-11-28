@@ -24,7 +24,7 @@ settings = dict({
     "xsrf_cookies": False,
     "debug": True,
     "site_url": "http://xxx.com",
-    "db": pymongo.Connection()
+    "sysdb": pymongo.Connection()
 })
 
 urls = ([

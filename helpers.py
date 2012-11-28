@@ -16,10 +16,6 @@ class BaseHandler(tornado.web.RequestHandler):
             return None
         return tornado.escape.json_decode(user)
 
-    @property
-    def db(self):
-        return self.settings["db"]
-
     def dbcon(self,database):
         coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
         con = pymongo.Connection(coninfo["host"],int(coninfo["port"]))
@@ -32,14 +28,22 @@ class BaseHandler(tornado.web.RequestHandler):
 
     @property
     def sysdb(self):
-        if not hasattr(BaseHandler, "_sysdb"):
-            _sysdb = pymongo.Connection("localhost")
-        return _sysdb
+        return self.settings["sysdb"]
+
+    def rootdb(self,database):
+        coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
+        con = pymongo.Connection(coninfo["host"],int(coninfo["port"]))
+        authcon = con
+        if not coninfo["host"] == "localhost":
+            authcon.authenticate(coninfo["root_user_name"],coninfo["root_password"])
+        else:
+            pass
+        return authcon
 
     @property
-    def fs(self):
+    def fs(self,database):
         if not hasattr(BaseHandler, "_fs"):
-            _fs = gridfs.GridFS(self.db)
+            _fs = gridfs.GridFS(self.dbcon(database))
         return _fs
 
     def get_user_locale(self):

@@ -9,7 +9,7 @@ import subprocess
 import functools
 
 class BaseHandler(tornado.web.RequestHandler):
-    mongo_path = "/usr/bin"
+
     def get_current_user(self):
         user = self.get_secure_cookie("current_user") or False
         if not user:
@@ -56,7 +56,7 @@ class modules(object):
         pass
 
     def export(self,db,coll,host=None,port=None,user=None,password=None):
-        exp = "%s/mongoexport -d %s -c %s" % (BaseHandler.mongo_path,db,coll)
+        exp = "%s/mongoexport -d %s -c %s" % (self.settings["mongo_path"],db,coll)
         if not db or not coll:
             return False
         if host:
@@ -72,7 +72,7 @@ class modules(object):
         return process.communicate()[0]
 
     def import_db(self,db,coll,data,host=None,port=None,user=None,password=None):
-        exp = "%s/mongoimport -d %s -c %s --file %s" % (BaseHandler.mongo_path,db,coll,data)
+        exp = "%s/mongoimport -d %s -c %s --file %s" % (self.settings["mongo_path"],db,coll,data)
         if not db or not coll or not data:
             return False
         if host:

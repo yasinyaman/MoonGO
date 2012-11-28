@@ -14,13 +14,13 @@ from helpers import BaseHandler, modules, database_control, collection_control
 
 class MainHandler(BaseHandler):
     def get(self):
-        db_list = self.sysdb.database_names()
+        db_list = self.db.database_names()
         for dbnamess in db_list:
             print "Database :" + dbnamess
-            collection_list = self.sysdb[dbnamess].collection_names()
+            collection_list = self.db[dbnamess].collection_names()
             for i in collection_list:
                 print "> Colletion :" + i
-                db_conn = self.sysdb[dbnamess]
+                db_conn = self.db[dbnamess]
                 doc_list = db_conn[i].find()
                 if doc_list:
                     for doc in doc_list:
@@ -84,7 +84,7 @@ class DBDrop(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
         self.dbcon(dbname, 0).drop_database(dbname)
-        self.sysdb.moongo_sys.userdbs.remove({"database":dbname, "user":self.current_user["name"]})
+        self.sysdb.moongo_sys.userdbs.remove({"datbase":dbname, "user":self.current_user["name"]})
         self.redirect("/")
 
 
@@ -114,7 +114,7 @@ class HostDBCopy(BaseHandler):
             password = False
 
         if user and password:
-            self.dbcon(dbname, 0).copy_database(
+            self.dbcon(hostdb["db"][0], 0).copy_database(
                 hostdb["hostdb"][0],
                 hostdb["db"][0],
                 hostdb["host"][0],
@@ -122,7 +122,7 @@ class HostDBCopy(BaseHandler):
                 password
             )
         else:
-            self.dbcon(hostdb["db"][0]).copy_database(
+            self.dbcon(hostdb["db"][0], 0).copy_database(
                 hostdb["hostdb"][0],
                 hostdb["db"][0],
                 hostdb["host"][0]

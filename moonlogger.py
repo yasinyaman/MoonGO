@@ -18,6 +18,16 @@ class Logger(object):
         self.pr_data = "%%s: Location: %%s, Exception: %%s, Time: %%s"
 
     def _set_data(self,loc,exp,type,extra,pr):
+        """
+        loc: logun kaydedildiği yer - dosya.class.fonksiyon
+        exp: logun kaydedilme nedeni - try-except'te alınan hata olabilir
+        type: logun seviyesi - error, warning, info
+        extra: loga eklenmek istenen extra mesaj
+                - locta fonksiyon çok uzunsa buraya değişken ismi verilebilir
+                - mesela _set_data >= 200 satır
+                - error("moonlogger.Logger._set_data",str(e),extra="t=time.time()"
+        pr: __init__ 'de var.
+        """
         if not pr: pr = self.pr
         t = time.time()
         data = {

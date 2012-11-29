@@ -7,6 +7,8 @@ import tornado.locale
 import pymongo, gridfs
 import subprocess
 import functools
+from pymongo.errors import *
+import moonlogger
 
 class BaseHandler(tornado.web.RequestHandler):
 

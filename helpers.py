@@ -20,14 +20,39 @@ class BaseHandler(tornado.web.RequestHandler):
 
     @property
     def sysdb(self):
-        return self.settings["sysdb"]
+        try:
+            db = self.settings["sysdb"]
+            self.logger.info("helpers.BaseHandler.sysdb","Connected",pr=0)
+            return self.settings["sysdb"]
+        except e:
+            self.logger.error("helpers.BaseHandler.sysdb","%s" % str(e))
+
+    @property
+    def logger(self):
+        if not hasattr(BaseHandler, "_logger"):
+            try:
+                _logger = moonlogger.Logger(self.sysdb)
+                return _logger
+            except e:
+                print "Fatal Error: %s" % str(e)
 
     def dbcon(self,database, state = 1):
-        coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
-        con = pymongo.Connection(coninfo["host"],int(coninfo["port"]))
+        try:
+            coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["name"],"database": database})
+        except (AutoReconnect,ConnectionFailure) as e:
+            self.logger.error("helpers.BaseHandler.dbcon",str(e),extra="coninfo")
+
+        try:
+            con = pymongo.Connection(coninfo["host"],int(coninfo["port"]))
+        except (AutoReconnect,ConnectionFailure) as e:
+            self.logger.error("helpers.BaseHandler.dbcon",str(e),extra="con")
+
         authcon = con[coninfo["database"]]
         if coninfo["username"] and coninfo["password"]:
-            authcon.authenticate(coninfo["username"],coninfo["password"])
+            try:
+                authcon.authenticate(coninfo["username"],coninfo["password"])
+            except (InvalidOperation,OperationFailure) as e:
+                self.logger.error("helpers.BaseHandler.dbcon",str(e),extra="authcon.authenticate")
         else:
             pass
         if state == 1:
@@ -38,8 +63,11 @@ class BaseHandler(tornado.web.RequestHandler):
     @property
     def fs(self,database):
         if not hasattr(BaseHandler, "_fs"):
-            _fs = gridfs.GridFS(self.dbcon(database))
-        return _fs
+            try:
+                _fs = gridfs.GridFS(self.dbcon(database))
+                return _fs
+            except e:
+                self.logger.error("helpers.BaseHandler.fs",str(e),extra="_fs")
 
     def get_user_locale(self):
         if self.get_cookie("lang"):
@@ -70,8 +98,12 @@ class modules(object):
         if password:
             exp += " --password %s" % password
 
-        process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
-        return process.communicate()[0]
+        try:
+            process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
+            return process.communicate()[0]
+        except e:
+            BaseHandler.logger.error("helpers.modules.export",str(e),"subprocess")
+            return False
 
     def import_db(self,db,coll,data,host=None,port=None,user=None,password=None):
         exp = "%s/mongoimport -d %s -c %s --file %s" % (self.settings["mongo_path"],db,coll,data)
@@ -86,8 +118,12 @@ class modules(object):
         if password:
             exp += " --password %s" % password
 
-        process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
-        return process.communicate()[0]
+        try:
+            process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
+            return process.communicate()[0]
+        except e:
+            BaseHandler.logger.error("helpers.modules.import_db",str(e),"subprocess")
+            return False
 
 
     def db_list(self):

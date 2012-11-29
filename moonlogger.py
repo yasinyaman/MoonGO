@@ -11,7 +11,8 @@ class Logger(object):
         """
         self.con = connection
         if not self.con and pr is not 0:
-            print "Error: Location: moonlogger.Logger.__init__, Exception: Connection Error, Time: %s" % time.time()
+            print
+            "Error: Location: moonlogger.Logger.__init__, Exception: Connection Error, Time: {0:>s}".format(time.time())
 
         self.pr = pr
 
@@ -44,11 +45,11 @@ class Logger(object):
 
         if pr == 2:
             self.con.moongo_sys.logger.insert(data)
-            print pr_data % (loc,exp)
+            print(pr_data % (loc, exp))
         elif pr == 1:
             self.con.moongo_sys.logger.insert(data)
         else:
-            print pr_data % (loc,exp)
+            print (pr_data % (loc,exp))
 
     def error(self,loc,exp,extra=None,pr=None):
         self._set_data(loc,exp,"error",extra,pr)

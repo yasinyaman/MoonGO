@@ -1,0 +1,36 @@
+          <form  action="/auth/update" method="post">
+
+            <fieldset>
+
+                
+                  <label class="control-label" for="name">İsim:</label>
+                 
+                    <input type="text" name="name"  value="{{user_info["name"]}}" id="name">
+                    
+                  
+                
+
+                
+                  <label class="control-label" for="username">Kullanıcı Adı:</label>
+                 
+                    <input type="text" name="username" value="{{user_info["username"]}}" id="user_name">
+                    
+                  
+
+
+                
+                  <label class="control-label" for="mail">Mail:</label>
+                 
+                    <input type="text" name="mail" value="{{user_info["mail"]}}" id="mail">
+                    
+                                 
+
+                
+                  <button type="submit" class="btn btn-primary">Update</button>
+                
+            </fieldset>
+          </form>
+
+          {% for db in db_info %}
+          <li> {{db["database"]}} | <a href="/userdbupdate/{{db["database"]}}">Edit</a> | <a href="/userdbremove/{{db["database"]}}"> Drop</a> </li>
+          {% end %}

@@ -18,8 +18,8 @@ class RegisterHandler(BaseHandler):
             self.write("Name required")
             return
 
-        if self.get_argument("user_name", False):
-            user_name = self.get_argument("user_name")
+        if self.get_argument("username", False):
+            username = self.get_argument("username")
         else:
             self.write("Username required")
             return
@@ -46,14 +46,11 @@ class RegisterHandler(BaseHandler):
             return
         user = dict(
             name=name,
-            user_name=user_name,
+            username=username,
             password=bcrypt.hashpw(password, bcrypt.gensalt()),
-            mail=mail,
-            root_user_name = bcrypt.hashpw(user_name,bcrypt.gensalt()),
-            root_password = bcrypt.hashpw(password,bcrypt.gensalt())+str(time.time())
+            mail=mail
         )
         self.sysdb.moongo_sys.users.save(user)
-        self.sysdb.admin.add_user(user["root_user_name"],user["root_password"])
         self.redirect("/auth/login")
 
 
@@ -65,10 +62,10 @@ class LoginHandler(BaseHandler):
             self.redirect("/")
 
     def post(self):
-        user_name = self.get_argument("user_name", False)
+        username = self.get_argument("username", False)
         password = self.get_argument("password", False)
-        if user_name and password:
-            user = self.sysdb.moongo_sys.users.find_one({"user_name": user_name},
+        if username and password:
+            user = self.sysdb.moongo_sys.users.find_one({"username": username},
                 {"_id": 0})
             if user:
                 crypt_pass = bcrypt.hashpw(password, user["password"])
@@ -91,3 +88,49 @@ class LogoutHandler(BaseHandler):
     def get(self):
         self.clear_cookie("current_user")
         self.redirect("/")
+
+
+class RemoveHandler(BaseHandler):
+    def get(self):
+        self.sysdb.moongo_sys.users.remove({"username":self.current_user["username"]})
+        self.clear_cookie("current_user")
+        self.redirect("/")
+
+class UpdateHandler(BaseHandler):
+    def get(self):
+        if not self.current_user:
+            self.redirect("/")
+        else:
+            user_info = self.sysdb.moongo_sys.users.find_one({"username":self.current_user["username"]})
+            db_info = self.sysdb.moongo_sys.userdbs.find({"user":self.current_user["username"]})
+            self.render("update.html",user_info = user_info, db_info = db_info )
+
+
+    def post(self):
+        if self.get_argument("name", False):
+            name = self.get_argument("name")
+        else:
+            self.write("Name required")
+            return
+
+        if self.get_argument("username", False):
+            username = self.get_argument("username")
+        else:
+            self.write("Username required")
+            return
+
+
+        if self.get_argument("mail", False):
+            mail = self.get_argument("mail")
+        else:
+            self.write("Mail is required")
+            return
+        user_info = self.sysdb.moongo_sys.users.find_one({"username":self.current_user["username"]})
+        user = dict(
+            _id=user_info["_id"],
+            name=name,
+            username=username,
+            mail=mail
+        )
+        self.sysdb.moongo_sys.users.save(user)
+        self.redirect("/auth/login")

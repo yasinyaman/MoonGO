@@ -1,0 +1,38 @@
+
+          <form action="/userdbupdate/{{db_info["database"]}}" method="post">
+            <fieldset>
+              <legend>Database Add</legend>
+                   <label class="control-label" for="database">database:</label>
+    
+                    <input type="text" name="database" value="{{db_info["database"]}}" class="input-xlarge">
+
+
+
+                    <label class="control-label" for="host">host:</label>
+    
+                    <input type="text" name="host" value="{{db_info["host"]}}" class="input-xlarge" >
+
+
+                    <label class="control-label" for="port">port:</label>
+    
+                    <input type="text" name="port" value="{{db_info["port"]}}" class="input-xlarge" >
+
+
+
+                  <label class="control-label" for="username">Username:</label>
+    
+                    <input type="text" name="username" value="{{db_info["username"]}}" class="input-xlarge" >
+
+
+   
+                  <label class="control-label" for="password">Password:</label>
+
+                    <input type="password" name="password" value="{{db_info["password"]}}" class="input-xlarge" ><br>
+
+
+                  <button type="submit" class="btn btn-primary">update</button>
+
+            </fieldset>
+          </form>
+
+

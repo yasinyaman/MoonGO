@@ -42,7 +42,7 @@ class UserDbAdd(BaseHandler):
     def post(self):
         if self.get_argument("name", False):
             databaseinfo = dict(
-                user=self.current_user["name"],
+                user=self.current_user["username"],
                 database=self.get_argument("name", False),
                 host=self.get_argument("host", False),
                 username = self.get_argument("username", False),
@@ -52,7 +52,7 @@ class UserDbAdd(BaseHandler):
         elif self.get_argument("uri", False):
             uri = pymongo.uri_parser.parse_uri(self.get_argument("uri", False), default_port=27017)
             databaseinfo = dict(
-                user=self.current_user["name"],
+                user=self.current_user["username"],
                 database=uri["database"],
                 host=uri["nodelist"][0][0],
                 username = uri["username"],
@@ -63,6 +63,35 @@ class UserDbAdd(BaseHandler):
             self.write("HATA")
         self.sysdb.moongo_sys.userdbs.save(databaseinfo)
         self.redirect("/")
+
+class UserDbUpdate(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, dbname):
+        db_info = self.sysdb.moongo_sys.userdbs.find_one({"database":dbname,"user":self.current_user["username"]})
+        self.render("userdbupdate.html", db_info = db_info)
+    @tornado.web.authenticated
+    def post(self, dbname):
+        db_info = self.sysdb.moongo_sys.userdbs.find_one({"database":dbname,"user":self.current_user["username"]})
+        databaseinfo = dict(
+            _id=db_info["_id"],
+            user=self.current_user["username"],
+            database=self.get_argument("database", False),
+            host=self.get_argument("host", False),
+            username = self.get_argument("username", False),
+            password=self.get_argument("password", False),
+            port=self.get_argument("port", 27017)
+        )
+        self.sysdb.moongo_sys.userdbs.save(databaseinfo)
+        self.redirect("/")
+
+class UserDbRemove(BaseHandler):
+    def get(self, dbname):
+        self.sysdb.moongo_sys.userdbs.remove({"database":dbname, "user":self.current_user["username"]})
+        self.redirect("/")
+    def post(self, dbname):
+        pass
+
+
 
 
 class SetLang(BaseHandler):
@@ -84,7 +113,7 @@ class DBDrop(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
         self.dbcon(dbname, 0).drop_database(dbname)
-        self.sysdb.moongo_sys.userdbs.remove({"datbase":dbname, "user":self.current_user["name"]})
+        self.sysdb.moongo_sys.userdbs.remove({"database":dbname, "username":self.current_user["username"]})
         self.redirect("/")
 
 

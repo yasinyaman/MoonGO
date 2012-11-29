@@ -34,12 +34,16 @@ urls = ([
     (r"/auth/register/?", RegisterHandler),
     (r"/auth/login/?", LoginHandler),
     (r"/auth/logout/?", LogoutHandler),
+    (r"/auth/update/?", UpdateHandler),
+    (r"/auth/remove/?", RemoveHandler),
 
     # Bu URL patternleri bÃ¶yle olmadÄ± sanki
     (r"/", DBList),
     (r"/databases/?", DBList),
     (r"/hostdbcopy/?", HostDBCopy),
     (r"/userdbadd/?", UserDbAdd),
+    (r"/userdbupdate/([^/]+)?",UserDbUpdate),
+    (r"/userdbremove/([^/]+)?",UserDbRemove),
     (r"/yukle/?",Yukle),
     (r"/indir/?",Indir),
     (r"/js/?",SystemJS),

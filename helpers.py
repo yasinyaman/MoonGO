@@ -9,6 +9,7 @@ import subprocess
 import functools
 from pymongo.errors import *
 import moonlogger
+import smtplib
 
 class BaseHandler(tornado.web.RequestHandler):
 
@@ -133,6 +134,18 @@ class modules(object):
         fs = gridfs.GridFS(db)
         return fs.get_last_version(filename)
 
+    def mailSender(self, to, subject, message):
+        gmail_user = self.settings["gmail_user"]
+        gmail_pwd = self.settings["gmail_password"]
+        smtpserver = smtplib.SMTP("smtp.gmail.com",587)
+        smtpserver.ehlo()
+        smtpserver.starttls()
+        smtpserver.ehlo
+        smtpserver.login(gmail_user, gmail_pwd)
+        header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject:' + subject + '\n'
+        msg = header + '\n' + message + '\n\n'
+        smtpserver.sendmail(gmail_user, to, msg)
+        smtpserver.close()
 
 def database_control(method):
     @functools.wraps(method)

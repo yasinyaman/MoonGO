@@ -23,27 +23,33 @@ settings = dict({
     "login_url": "/auth/login",
     "xsrf_cookies": False,
     "debug": True,
-    "site_url": "http://xxx.com",
+    "site_url": "http://iglon.com:8877",
     "sysdb": pymongo.Connection(),
-    "mongo_path": "/usr/bin"
+    "mongo_path": "/usr/bin",
+    "gmail_user": "",
+    "gmail_password":""
 
 })
 
+
 urls = ([
     # auth
-    (r"/auth/register/?", RegisterHandler),
+    (r"/auth/register/?([^/]+)?/?", RegisterHandler),
     (r"/auth/login/?", LoginHandler),
     (r"/auth/logout/?", LogoutHandler),
     (r"/auth/update/?", UpdateHandler),
     (r"/auth/remove/?", RemoveHandler),
+    (r"/auth/recovery/?", RecoveryHandler),
+    (r"/auth/reset/([^/]+)/?",PasswordResetHandler),
+    (r"/auth/invitation/?",InvitationHandler),
 
     # Bu URL patternleri bÃ¶yle olmadÄ± sanki
     (r"/", DBList),
     (r"/databases/?", DBList),
     (r"/hostdbcopy/?", HostDBCopy),
     (r"/userdbadd/?", UserDbAdd),
-    (r"/userdbupdate/([^/]+)?",UserDbUpdate),
-    (r"/userdbremove/([^/]+)?",UserDbRemove),
+    (r"/userdbupdate/([^/]+)/?",UserDbUpdate),
+    (r"/userdbremove/([^/]+)/?",UserDbRemove),
     (r"/yukle/?",Yukle),
     (r"/indir/?",Indir),
     (r"/js/?",SystemJS),

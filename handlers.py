@@ -33,7 +33,6 @@ class MainHandler(BaseHandler):
             self.render("database.html", db_list=db_list)
             self.write(db_list[0])
 
-
 class UserDbAdd(BaseHandler):
     @tornado.web.authenticated
     def get(self):

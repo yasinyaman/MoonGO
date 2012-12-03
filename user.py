@@ -215,8 +215,8 @@ class PasswordResetHandler(BaseHandler, modules):
             self.write("HATA")
 
 class Authorizing(BaseHandler, modules):
-    @root_control
     @tornado.web.authenticated
+    @root_control
     def get(self):
         self.write("""
             <form method="post">
@@ -233,9 +233,8 @@ class Authorizing(BaseHandler, modules):
         self.sysdb.moongo_sys.user_authorizing.save({"username":username, "authorizing":authorizing})
 
 class InvitationHandler(BaseHandler, modules):
-    @root_control
     @tornado.web.authenticated
-
+    @root_control
     def get(self):
         self.write("""
             <form method="post">

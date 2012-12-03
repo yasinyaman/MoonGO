@@ -146,11 +146,23 @@ class modules(object):
         msg = header + '\n' + message + '\n\n'
         smtpserver.sendmail(gmail_user, to, msg)
         smtpserver.close()
+        
+    def username_check(self, username):
+        if self.sysdb.moongo_sys.users.find_one({"username":username}):
+            return True
+        else:
+            return False
+
+    def mail_check(self, mail):
+        if self.sysdb.moongo_sys.users.find_one({"mail":mail}):
+            return True
+        else:
+            return False
 
 def database_control(method):
     @functools.wraps(method)
     def control(self,dbname,collname):
-        if dbname not in self.db.database_names():
+        if dbname not in self.db_list():
             self.write("HATA")
         else:
             return method(self,dbname,collname)
@@ -159,9 +171,29 @@ def database_control(method):
 def collection_control(method):
     @functools.wraps(method)
     def control(self,dbname,collname):
-        if collname not in self.db[dbname].collection_names():
+        if collname not in self.collections_list(dbname):
             self.write("HATA")
         else:
             return method(self,dbname,collname)
     return control
+
+def noauth(method):
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        if self.current_user:
+            return self.redirect("/")
+        return method(self, *args, **kwargs)
+    return wrapper
+
+def root_control(method):
+    @functools.wraps(method)
+    def control(self,*args, **kwargs):
+        if not self.sysdb.moongo_sys.user_authorizing.find_one({"username":self.current_user["username"], "authorizing":"root"}):
+            return self.write("There is no authority.")
+        return method(self, *args, **kwargs)
+            
+    return control
+
+
+
 

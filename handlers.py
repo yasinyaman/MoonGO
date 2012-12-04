@@ -278,9 +278,10 @@ class DocEdit(BaseHandler):
 
 
 class DocImport(BaseHandler,modules):
+    @tornado.web.authenticated
     def get(self, dbname, collname):
         self.write("<form method='post' enctype='multipart/form-data'><input type='file' name='data'><input type='submit'></form>")
-
+    @tornado.web.authenticated
     def post(self, dbname, collname):
         dosya = self.request.files["data"][0]
         with open(dosya["filename"],"w") as f:
@@ -288,11 +289,13 @@ class DocImport(BaseHandler,modules):
         self.write("%s" % (self.import_db(dbname, collname, dosya["filename"])))
 
 class DocExport(BaseHandler,modules):
+    @tornado.web.authenticated
     def get(self, dbname, collname):
         self.write("%s" % (str(self.export(dbname,collname))))
 
 
 class Yukle(BaseHandler,modules):
+    @tornado.web.authenticated
     def get(self):
         self.write("""
             <form method="post" enctype="multipart/form-data">
@@ -300,7 +303,7 @@ class Yukle(BaseHandler,modules):
                 <input type="submit">
             </form>
         """)
-
+    @tornado.web.authenticated
     def post(self):
         file = self.request.files["gfs"][0]
         self.write(file["filename"])
@@ -308,6 +311,7 @@ class Yukle(BaseHandler,modules):
 
 
 class Indir(BaseHandler,modules):
+    @tornado.web.authenticated
     def get(self):
         self.write("""
             <form method="post">
@@ -315,7 +319,7 @@ class Indir(BaseHandler,modules):
                 <input type="submit">
             </form>
         """)
-
+    @tornado.web.authenticated
     def post(self):
         file = self.get_argument("gfs",None)
         gfs = self.get_file(self.db.files,file)
@@ -324,6 +328,7 @@ class Indir(BaseHandler,modules):
 
 
 class SystemJS(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.write("""
             <form method="post">
@@ -333,7 +338,7 @@ class SystemJS(BaseHandler):
                 <input type="submit">
             </form>
         """)
-
+    @tornado.web.authenticated
     def post(self):
         # Listeleme self.db[dbname].system_js.list()
         name = self.get_argument("name",None)

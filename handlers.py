@@ -43,20 +43,18 @@ class UserDbAdd(BaseHandler):
             databaseinfo = dict(
                 user=self.current_user["username"],
                 database=self.get_argument("name", False),
-                host=self.get_argument("host", False),
+                host=self.get_argument("host", False) + ":" + self.get_argument("port", 27017),
                 username = self.get_argument("username", False),
                 password=self.get_argument("password", False),
-                port=self.get_argument("port", 27017)
             )
         elif self.get_argument("uri", False):
             uri = pymongo.uri_parser.parse_uri(self.get_argument("uri", False), default_port=27017)
             databaseinfo = dict(
                 user=self.current_user["username"],
                 database=uri["database"],
-                host=uri["nodelist"][0][0],
+                host=uri["nodelist"],
                 username = uri["username"],
                 password=uri["password"],
-                port=uri["nodelist"][0][1]
             )
         elif not self.get_argument("name", False) or self.get_argument("uri", False) or self.get_argument("host",False):
             self.write("HATA")

@@ -28,7 +28,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def dbcon(self,database, state = 1):
         coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["username"],"database": database})
-        con = pymongo.Connection(coninfo["host"],int(coninfo["port"]))
+        con = pymongo.Connection(coninfo["host"])
         authcon = con[coninfo["database"]]
         if coninfo["user"] and coninfo["password"]:
            authcon.authenticate(coninfo["user"],coninfo["password"])

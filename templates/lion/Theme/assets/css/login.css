@@ -1,0 +1,46 @@
+﻿/*!
+ * Lion - Responsive Admin Theme
+ *
+ * Copyright 2012 
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Created by: Esteban Alvarez
+ * URL: http://www.basicoh.com
+ * Designed and built based on Twitter Bootstrap.
+ */
+
+/*CONFIGURATION USED IN INDEX.HTML*/
+/*Login Page*/
+
+body {
+	background:#e4e4da;
+	background-image: url('../img/sep.png');
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+select, textarea, input[type=text], input[type=password], input[type=datetime], input[type=datetime-local], input[type=date], input[type=month], input[type=time], input[type=week], input[type=number], input[type=email], input[type=url], input[type=search], input[type=tel], input[type=color], .uneditable-input {
+  display: inline-block;
+  height: 26px;
+  padding: 4px 6px;
+  margin-bottom: 9px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #9e9d9d;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+}
+
+.block-unit {
+  margin-bottom: 30px;
+  padding-bottom:10px;
+	border: 1px solid #cfcdc1;
+  background-color: #edede3;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}
+
+/*FORM ERROR MESSAGE*/
+.error{ color:#ff6e01;}

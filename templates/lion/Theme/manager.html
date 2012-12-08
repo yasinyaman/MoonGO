@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Lion - Bootstrap Admin Theme</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+      }
+    </style>
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+
+  	<!-- Google Fonts call. Font Used Open Sans -->
+  	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel='stylesheet' type='text/css'>
+  	
+  	<!-- ElFinder File Manager CSS. https://github.com/Studio-42/elFinder/ -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/smoothness/jquery-ui.css">
+  	<link rel="stylesheet" type="text/css" media="screen" href="assets/manager/css/elfinder.min.css">
+	<script type="text/javascript" src="assets/manager/js/elfinder.min.js"></script>	
+  	
+  	<!-- elFinder web manager init -->
+	<script type="text/javascript" charset="utf-8">
+		$().ready(function() {
+			var elf = $('#elfinder').elfinder({
+				// lang: 'ru',             // language (OPTIONAL)
+				url : 'assets/manager/php/connector.php'  // connector URL (REQUIRED)
+			}).elfinder('instance');			
+		});
+	</script>    
+  </head>
+  <body>
+  	<!-- NAVIGATION MENU -->
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="index.html"><img src="assets/img/logo-small.png" alt=""> Lion Admin Theme</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="index.html"><i class="icon-home icon-white"></i> Home</a></li>
+              <li><a href="charts.html"><i class="icon-signal icon-white"></i> Charts</a></li>
+              <li class="active"><a href="manager.html"><i class="icon-folder-open icon-white"></i> File Manager</a></li>
+              <li><a href="calendar.html"><i class="icon-calendar icon-white"></i> Calendar</a></li>
+              <li><a href="ui-elements.html"><i class="icon-bookmark icon-white"></i> UI Elements</a></li>
+              <li><a href="tables.html"><i class="icon-th icon-white"></i> Tables</a></li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-file icon-white"></i> Sample Pages <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="buttons.html"><i class="icon-gift icon-white"></i> Buttons & Icons</a></li>
+                  <li><a href="invoice.html"><i class="icon-pencil icon-white"></i> Invoice</a></li>
+                  <li><a href="forms.html"><i class="icon-align-justify icon-white"></i> Forms</a></li>
+                  <li><a href="gallery.html"><i class="icon-picture icon-white"></i> Gallery</a></li>
+                  <li><a href="grid.html"><i class="icon-align-left icon-white"></i> Grid</a></li>
+                  <li class="divider"></li>
+                  <li><a href="map.html"><i class="icon-globe icon-white"></i> Map</a></li>
+                  <li><a href="404.html"><i class="icon-warning-sign icon-white"></i> 404 Error</a></li>
+                  <li><a href="login.html"><i class="icon-wrench icon-white"></i> Login</a></li>
+                </ul>
+              </li>
+              <li><a href="user.html"><i class="icon-user icon-white"></i> User</a></li>
+
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+	<div class="container">
+
+      <!-- CONTENT -->
+		<div class="row">
+      		<!-- Sidebar -->
+			<div class="span3">
+				<div class="block-unit">
+      				<div class="oneBox"> <img src="assets/img/pic6.jpg" alt=""> <a href="user.html" class="tooltip-test" data-placement="top" title="Go to the User Profile Page"><strong>Brian Smith</strong> <em>Logged as an administrator</em></a> </div>
+					<p><i class="icos-mail"></i> <a href="#" class="tooltip-test" data-placement="top" title="New Mails"><span class="badge badge-one">6</span></a> 
+					- <i class="icos-comments3"></i> <a href="#" class="tooltip-test" data-placement="top" title="New Messages"><span class="badge badge-one">2</span></a></p>
+		      		<p>You can use this sidebar for multiple purposes. You can show your most important stats or a list of pending task for example.</p>
+					<hr>
+					<p><strong>Quick Information</strong></p>
+		      		<p><i class="icos-meter-fast"></i> Bandiwth Consumption <span class="badge badge-warning">76%</span> </p>
+		      		<p><i class="icos-database"></i> Disk Space Used <span class="badge badge-one">35%</span></p>
+		      		<p><i class="icos-basket"></i> Sales Last Month <span class="badge badge-success">1981</span> </p>
+		      		<p><i class="icos-heart"></i> Earnings Last Month <span class="badge badge-success">$44,550</span></p>
+					<hr>
+					<p><strong>New Update</strong></p>
+      				<div class="oneBox"> <img src="assets/img/pic1.jpg" alt=""> <strong>Roger Taylor</strong> <em>wrote a minute ago.</em></div>
+					<p style="background:#dbd2c6;padding:.5em .75em;color:#444;font-size:12px;"><em>"You can be anything you want to be, Just turn yourself into anything you think that you could ever be. Be free with your tempo, be free be free. Surrender your ego - be free, be free to yourself."</em></p>
+					<hr>
+					<p><strong>Important Stat</strong></p>
+			        <div id="money"></div>
+				</div><!-- /block-unit -->
+        	</div><!-- /span3 -->
+
+      		<!-- File Manager -->
+        	<div class="span9">
+				<div id="elfinder">finder</div>
+				<div class="row" style="margin:auto">
+					<h4>elFinder Web Manager</h4>
+						<p>elFinder is an open-source file manager for web, written in JavaScript using
+						jQuery UI. As you can see its creation is inspired by simplicity and convenience
+						of Finder program used in Mac OS X operating system. 
+						</p>
+					<h5>Authors</h5>
+					<p>* Chief developer: Dmitry "dio" Levashov dio@std42.ru</p>
+					<p>* Maintainer, developer: Troex Nevelin troex@fury.scancode.ru</p>
+					<p>* Developer: Alexey Sukhotin strogg@yandex.ru</p>
+					<p>* Icons: [PixelMixer](http://pixelmixer.ru), [Yusuke Kamiyamane](http://p.yusukekamiyamane.com)</p>
+					<h5>Support</h5>
+					<p>* Homepage - http://elfinder.org</p>
+					<p>* Wiki - https://github.com/Studio-42/elFinder/wiki</p>
+					<p>* Issues - https://github.com/Studio-42/elFinder/issues</p>
+				</div>
+			</div><!-- /span9 -->
+	      </div><!-- /row -->
+	   </div> <!-- /container -->
+     
+    <!-- Footer -->
+	<div id="footerwrap">
+      	<footer class="clearfix"></footer>
+      	<div class="container">
+      		<div class="row">
+      			<div class="span12">
+      			<p><img src="assets/img/logo.png" alt=""></p>
+      			<p>Lion Admin Theme - Crafted With Love - Copyright 2012</p>
+      			</div>
+      		</div><!-- /row -->
+      	</div><!-- /container -->		
+	</div><!-- /footerwrap -->
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="assets/js/bootstrap-transition.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-alert.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-modal.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-dropdown.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-scrollspy.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-tab.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-popover.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-button.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-carousel.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
+	<script type="text/javascript" src="assets/js/highcharts.js"></script>
+    <script type="text/javascript" src="assets/js/sidebar-chart.js"></script>
+    <script type="text/javascript" src="assets/js/admin.js"></script>
+    
+
+  </body>
+</html>

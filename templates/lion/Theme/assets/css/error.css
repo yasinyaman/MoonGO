@@ -1,0 +1,43 @@
+﻿
+/*!
+ * Lion - Responsive Admin Theme
+ *
+ * Copyright 2012 
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Created by: Esteban Alvarez
+ * URL: http://www.basicoh.com
+ * Designed and built based on Twitter Bootstrap.
+ */
+
+/*CONFIGURATION USED IN ERROR.HTML*/
+
+body {
+	background:#4c453d;
+    font-family: 'Open Sans', sans-serif;
+    color:#e4e4da;
+}
+
+h4 , h5 {
+	font-family: 'Open Sans', sans-serif;
+	font-weight:lighter;
+}
+
+h5 {
+	color:#ff6e01
+}
+
+h3 {
+	font-family: 'Squada One', cursive;
+	font-size:200px;
+	color:#88a61b;
+	font-weight:bolder;
+	text-align:center;
+	margin-bottom:70px;
+}
+
+p {
+	text-align:center;
+	font-size:24px;
+	line-height:30px;
+}

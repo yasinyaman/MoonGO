@@ -1,0 +1,1096 @@
+﻿/*!
+ * Lion - Responsive Admin Theme
+ *
+ * Copyright 2012 
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Created by: Carlos Esteban Alvarez
+ * URL: http://www.basicoh.com
+ * Designed and built based on Twitter Bootstrap.
+ */
+
+/* COLOR REFERENCE
+- #e4e4da (Background Color)
+- #d7d5c9 (Middlewrap Section) 
+- #4c453d (Navigation & Footer) 
+- #312D27 (Navigation hover & Footer border) 
+- #ff6e01 (Orange - Used in titles, badges, bars and navigation) 
+*/
+
+
+/**********BASE CONFIGURATIONS**********/   
+body {
+	background:#e4e4da;
+    font-family: 'Open Sans', sans-serif;
+    background-image:url('../img/sep-half.png');
+
+}
+
+h3,h4 , h5 {
+	font-family: 'Open Sans', sans-serif;
+	font-weight:lighter;
+}
+
+h2{
+	font-size:22px;
+}
+
+h3 {
+	font-size:46px;
+	color:#ff6e01;
+}
+
+h5 {
+	color:#ff6e01
+}
+
+/***********BLOCKS & WRAPS***********/
+
+/*--- Dash Unit / Used in Dashboard page ---*/
+.dash-unit {		
+	margin-bottom: 30px;
+	padding-bottom:10px;
+	border: 1px solid #bfb9b1;
+	background-color: #554e44;
+	-webkit-border-radius: 4px;
+	 -moz-border-radius: 4px;
+	      border-radius: 4px;
+	color:white;
+	height:290px;
+	-moz-box-shadow:    3px 3px 2px 0px #bfb9b1;
+	-webkit-box-shadow: 3px 3px 2px 0px #bfb9b1;
+	box-shadow:         3px 3px 2px 0px #bfb9b1;
+	background-image:url('../img/sep-half.png');
+}
+
+.dash-unit h1 {
+	padding-top:10px;
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 18px;
+	font-weight: 800;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: #afa494;
+}
+
+.dash-unit p {
+	font-size: 12px;
+	font-weight: 200;
+	line-height: 18px;
+	color: inherit;
+	margin: 0 0 10px;
+	padding:5px;
+ }
+
+.dash-unit h4 {
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 13px;
+	font-weight:lighter;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: #afa494;
+}
+
+.dash-unit h6 {
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 10px;
+	font-weight:lighter;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: #ff6e01;
+}
+
+
+/*--- Dash2 Unit / Used in Dashboard to present the bottom information ---*/
+.dash2-unit {
+	padding-top:10px;
+	margin-bottom: 30px;
+	padding-bottom:10px;
+	border-top: 2px solid #cfcdc1;
+	height:300px;
+	color: #948b7c;
+}
+
+.dash2-unit:hover {
+	background-color: #fff;
+	-moz-box-shadow:    3px 3px 2px 0px #98948e;
+    -webkit-box-shadow: 3px 3px 2px 0px #98948e;
+    box-shadow:         3px 3px 2px 0px #98948e;
+    cursor:pointer;
+}
+
+.dash2-unit:hover h6{
+	color:#ff6e01;
+}
+
+.dash2-unit:hover h2{
+	color:#ff6e01;
+}
+
+.dash2-unit h1 {
+	padding-top:10px;
+	padding-left:5px;
+	padding-right:5px;
+	margin-top:2px;
+	font-size: 16px;
+	font-weight:lighter;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: #948b7c;
+	text-align:center;
+}
+
+.dash2-unit h2 {
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 14px;
+	font-weight: lighter;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: inherit;
+	color:#948b7c;
+	text-align:center;
+}
+
+.dash2-unit h4 {
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 13px;
+	font-weight:lighter;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: inherit;
+}
+
+.dash2-unit h6 {
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 40px;
+	font-weight:600;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: #948b7c;
+	text-align:center;
+}
+
+.dash2-unit p {
+	font-size: 12px;
+	font-weight: 200;
+	line-height: 18px;
+	color: inherit;
+	margin: 0 0 10px;
+	padding:5px;
+ }
+
+
+/*--- Block Unit / Used in all the theme. The main purpose is separate content ---*/
+.block-unit {
+	margin-bottom: 30px;
+	padding-bottom:10px;
+	border: 1px solid #cfcdc1;
+	background-color: #edede3;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	vertical-align: baseline;
+}
+
+.block-unit h1 {
+	padding-top:10px;
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 18px;
+	font-weight:lighter;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: inherit;
+}
+
+.block-unit h2 {
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: inherit;
+	color:#ff6e01;
+}
+
+.block-unit h4 {
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 13px;
+	font-weight:lighter;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: inherit;
+}
+
+.block-unit h5{
+	padding-left:5px;
+}
+
+.block-unit h6 {
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 10px;
+	font-weight:lighter;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: #ff6e01;
+}
+
+.block-unit p {
+	font-size: 12px;
+	font-weight: 200;
+	line-height: 18px;
+	color: inherit;
+	margin: 0 0 10px;
+	padding:5px;
+ }
+ 
+/*--- button-unit / Used exclusive in Buttons.html only for proper "height" and other styling. ---*/
+
+.button-unit{
+	margin-bottom: 30px;
+	padding-bottom:10px;
+	border: 1px solid #cfcdc1;
+	background-color: #edede3;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	height:230px;
+	padding: 6px 6px 6px 6px;
+}
+
+.button-unit h1 {
+	padding-top:10px;
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 18px;
+	font-weight:lighter;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: inherit;
+}
+
+ 
+/*--- form-unit / Used exclusive in Forms.html and User.html ---*/
+
+.form-unit {	
+	margin-bottom: 30px;
+	padding-bottom:10px;
+	border: 1px solid #cfcdc1;
+	background-color: #edede3;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	height: 500px;
+	padding:5px 5px 5px 5px;
+	text-align:center;
+}
+
+.form-unit h1 {
+	padding-top:10px;
+	padding-left:5px;
+	margin-top:2px;
+	font-size: 18px;
+	font-weight:lighter;
+	line-height: 1;
+	letter-spacing: 0px;
+	color: inherit;
+}
+
+.form-unit h5{
+	padding-left:5px;
+}
+
+.form-unit p {
+	font-size: 12px;
+	font-weight: 200;
+	line-height: 18px;
+	color: inherit;
+	margin: 0 0 10px;
+	padding:5px;
+ }
+
+	
+
+
+/*--- MiddleWrap Section ---*/
+#middlewrap {
+    width: 100%;
+    background:#d7d5c9;
+    padding-top:25px;
+    border-top-style: solid;
+    border-top-width:8px;
+    border-top-color:#cfcdc1;
+}
+
+/*--- FooterWrap Section ---*/
+#footerwrap {
+    width: 100%;
+    background:#4c453d;
+    padding-top:25px;
+    padding-bottom: 40px;
+	border-top-style: solid;
+    border-top-width:8px;
+    border-top-color:#312d27;
+    background-image:url('../img/sep-half.png');
+    text-align:center
+
+}
+
+#footerwrap p {
+	color:white;
+	font-size:12px;
+} 
+
+/***********LABELS, BADGES & BARS***********/
+.label-one,
+.badge-one {
+  background-color: #ff6e01;
+}
+
+.label-two,
+.badge-two {
+	background-color: #4c453d;
+}
+
+.alert-one {
+  color: #ff6e01;
+  background-color: #e5dfd5;
+  border-color: #f9cbac;
+}
+
+.progress-one .bar,
+.progress .bar-one {
+  background-color: #ff6e01;
+    background-repeat: repeat-x;
+	background-image: linear-gradient(to bottom, #ea5b02, #cf5102);
+}
+
+.progress-one.progress-striped .bar,
+.progress-striped .bar-one {
+  background-color: #ff6e01;
+  background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+}
+
+/***********BOXES (Used to present last network activity blocks)***********/
+.oneBox {
+	position: inherit;
+	margin: 0 0px 10px 0px;
+	background-color: #f5f5f5;
+	cursor: pointer;
+	left: 0px;
+ -webkit-transition: background-color .2s ease-out;
+ -moz-transition: background-color .2s ease-out;
+ -o-transition: background-color .2s ease-out;
+ transition: background-color .2s ease-out;
+}
+.oneBox:hover {
+	background-color: #ededed;
+}
+.oneBox strong {
+	font-size: 12px;
+	font-weight:lighter;
+	color:#ff6e01;
+	display: inline-block;
+	margin-right: 5px;
+}
+.oneBox em {
+	display: inline-block;
+	color: #AAA;
+	font-size:10px;
+}
+.oneBox.last {
+	margin: 0;
+}
+
+
+/**********IMAGE MASK & HOVER**********/
+.mask img {
+	margin: 0 auto;
+	max-width: 100%;
+	display: block;
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+    filter: alpha(opacity=80);
+	opacity: 0.8;
+	box-shadow: 1px 1px 10px rgba(0,0,0,0.2);
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	-ms-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+}
+
+.mask img:hover{
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=99)";
+    filter: alpha(opacity=99);
+	opacity: 1;
+}
+
+/**********SPECIAL GRID STYLES**********/
+/*-- Special Use in Grid.html --- */
+
+.show-grid {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+.show-grid [class*="span"] {
+  background-color: #eee;
+  text-align: center;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+  min-height: 40px;
+  line-height: 40px;
+}
+.show-grid:hover [class*="span"] {
+  background: #ddd;
+}
+.show-grid .show-grid {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.show-grid .show-grid [class*="span"] {
+  background-color: #ccc;
+}
+
+/**********FORM ERROR STYLE**********/
+.error{ color:#ff6e01;}
+
+/**********DONUT CHARTS STYLES**********/
+#money {
+	background-image: url(../img/money.png);
+	width: 13.313em;
+	height: 13.313em;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin-bottom: 1.063em;
+	background-position: center center;
+	min-width: 200px;
+	margin:auto;
+}
+
+#site {
+	background-image: url(../img/rocket.png);
+	width: 13.313em;
+	height: 13.313em;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin-bottom: 1.063em;
+	background-position: center center;
+	min-width: 200px;
+	margin:auto;
+}
+
+#users {
+	background-image: url(../img/user.png);
+	width: 13.313em;
+	height: 13.313em;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin-bottom: 1.063em;
+	background-position: center center;
+	min-width: 200px;
+	margin:auto;
+}
+
+#otherstat {
+	background-image: url(../img/computer.png);
+	width: 13.313em;
+	height: 13.313em;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin-bottom: 1.063em;
+	background-position: center center;
+	min-width: 200px;
+	margin:auto;
+}
+
+
+/**********PURE CSS SWITCH**********/
+*,
+*:after,
+*:before {
+    box-sizing: border-box;
+}
+
+.switch input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.switch {
+    width: 100px;
+    height: 30px;
+    margin-top:20px;
+    margin-left:15px;
+    margin-bottom:20px;
+    position: relative;
+}
+
+.switch label {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #a5a39d;
+    border-radius: 40px;
+    box-shadow:
+        inset 0 3px 8px 1px rgba(0,0,0,0.2),
+        0 1px 0 rgba(255,255,255,0.5);
+}
+
+.switch label:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: -8px; right: -8px; bottom: -8px; left: -8px;
+    border-radius: inherit;
+    background: #ccc;
+    background: -webkit-linear-gradient(#f2f2f2, #ababab);
+    box-shadow: 0 0 10px rgba(0,0,0,0.3),
+        0 1px 1px rgba(0,0,0,0.25);
+}
+
+.switch label:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: -18px; right: -18px; bottom: -18px; left: -18px;
+    border-radius: inherit;
+    background: #eee; 
+    background: linear-gradient(#e5e7e6, #eee);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    -webkit-filter: blur(1px);
+    filter: blur(1px);
+}
+
+.switch label i {
+    display: block;
+    height: 100%;
+    width: 60%;
+    position: absolute;
+    right: 40%;
+    top: 0;
+    z-index: 2;
+    border-radius: inherit;
+    background: #b2ac9e;
+    background: linear-gradient(#f7f2f6, #b2ac9e);
+    box-shadow:
+        inset 0 1px 0 white,
+        0 0 8px rgba(0,0,0,0.3),
+        0 5px 5px rgba(0,0,0,0.2);
+}
+
+.switch label i:after {
+    content: "";
+    position: absolute;
+    left: 15%;
+    top: 25%;
+    width: 70%;
+    height: 50%;
+    background: #d2cbc3;
+    background: linear-gradient(#cbc7bc, #d2cbc3);
+    border-radius: inherit;
+}
+
+.switch label i:before {
+    content: "off";
+    position: absolute;
+    top: 52%;
+    right: -50%;
+    margin-top: -8px;
+    color: #666;
+    color: rgba(0,0,0,0.4);
+    font-style: normal;
+    font-weight: bold;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 #bcb8ae, 0 -1px 0 #97958e;
+}
+
+.switch input:checked ~ label { 
+    background: #9abb82;
+}
+ 
+.switch input:checked ~ label i {
+    left: auto;
+    right: -1%;
+}
+ 
+.switch input:checked ~ label i:before {
+    content: "on";
+    right: 115%;
+    color: #82a06a;
+    text-shadow: 0 1px 0 #afcb9b, 0 -1px 0 #6b8659;
+}
+
+/***********FULLCALENDAR STYLE***********/
+
+#external-events {
+	padding: 0 10px;
+	border: 1px solid #cfcdc1;
+	  background-color: #edede3;
+	  -webkit-border-radius: 4px;
+	     -moz-border-radius: 4px;
+	          border-radius: 4px;
+	text-align: left;
+	}
+	
+#external-events h4 {
+	font-size: 16px;
+	margin-top: 0;
+	padding-top: 1em;
+	}
+	
+.external-event { /* try to mimick the look of a real event */
+	margin: 10px 0;
+	padding: 2px 4px;
+	background: #d84436;
+	color: #fff;
+	font-size: .85em;
+	cursor: pointer;
+	}
+	
+#external-events p {
+	margin: 1.5em 0;
+	font-size: 11px;
+	color: #666;
+	}
+	
+#external-events p input {
+	margin: 0;
+	vertical-align: middle;
+	}
+
+#calendar {
+	width:100%;
+	}
+
+
+/**********INVOICE STYLE**********/
+.invoice {
+	display:block;
+	width:100%;
+}
+
+.invoice-unit {
+	margin-bottom: 30px;
+	padding-bottom:10px;
+	border: 1px solid #cfcdc1;
+	background-color: #edede3;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding:8px 8px 8px 8px;
+}
+.invoice .invoice-name {
+  float: right;
+  font-size: 36px;
+  color: #ddd;
+  font-weight: bold;
+}
+.invoice .invoice-infos {
+  margin-top: 30px;
+  *zoom: 1;
+  float: right;
+  width: auto;
+  text-align: right;
+}
+.invoice .invoice-infos:before,
+.invoice .invoice-infos:after {
+  display: table;
+  content: "";
+}
+.invoice .invoice-infos:after {
+  clear: both;
+}
+.invoice .invoice-infos .dl-horizontal:first-child {
+  margin-top: 0;
+}
+.invoice .invoice-from {
+  margin-top: 25px;
+}
+.invoice .invoice-to {
+  margin-top: 30px;
+  float: left;
+  *zoom: 1;
+}
+.invoice .invoice-to:before,
+.invoice .invoice-to:after {
+  display: table;
+  content: "";
+}
+.invoice .invoice-to:after {
+  clear: both;
+}
+.invoice .table-invoice {
+  margin-top: 50px;
+  border: 1px solid #bbb;
+}
+.invoice .table-invoice thead tr th {
+  font-weight: bold;
+  font-size: 14px;
+}
+.invoice .table-invoice tbody .price,
+.invoice .table-invoice tbody .qty,
+.invoice .table-invoice tbody .bottom,
+.invoice .table-invoice tbody .last {
+  text-align: center;
+}
+.invoice .table-invoice .last {
+  font-weight: bold;
+}
+
+
+/**********GLYPHCONS ICOMOON**********/
+[class^="icos-"],
+[class*=" icos-"] {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-top: 1px;
+  *margin-right: .3em;
+  line-height: 14px;
+  vertical-align: middle;
+}
+
+.icos-accessibility {background: url(../img/icos/accessibility.png); background-size: 14px 14px;}
+.icos-accessibility1 {background: url(../img/icos/accessibility1.png); background-size: 14px 14px;}
+.icos-amazon {background: url(../img/icos/amazon.png); background-size: 14px 14px;}
+.icos-amazon1 {background: url(../img/icos/amazon1.png); background-size: 14px 14px;}
+.icos-android {background: url(../img/icos/android.png); background-size: 14px 14px;}
+.icos-apple {background: url(../img/icos/apple.png); background-size: 14px 14px;}
+.icos-arrow-down {background: url(../img/icos/arrow-down.png); background-size: 14px 14px;}
+.icos-arrow-down1 {background: url(../img/icos/arrow-down1.png); background-size: 14px 14px;}
+.icos-arrow-down2 {background: url(../img/icos/arrow-down2.png); background-size: 14px 14px;}
+.icos-arrow-down3 {background: url(../img/icos/arrow-down3.png); background-size: 14px 14px;}
+.icos-arrow-down4 {background: url(../img/icos/arrow-down4.png); background-size: 14px 14px;}
+.icos-arrow-down5 {background: url(../img/icos/arrow-down5.png); background-size: 14px 14px;}
+.icos-arrow-down-left {background: url(../img/icos/arrow-down-left.png); background-size: 14px 14px;}
+.icos-arrow-down-left1 {background: url(../img/icos/arrow-down-left1.png); background-size: 14px 14px;}
+.icos-arrow-down-left2 {background: url(../img/icos/arrow-down-left2.png); background-size: 14px 14px;}
+.icos-arrow-down-right {background: url(../img/icos/arrow-down-right.png); background-size: 14px 14px;}
+.icos-arrow-down-right1 {background: url(../img/icos/arrow-down-right1.png); background-size: 14px 14px;}
+.icos-arrow-down-right2 {background: url(../img/icos/arrow-down-right2.png); background-size: 14px 14px;}
+.icos-arrow-left {background: url(../img/icos/arrow-left.png); background-size: 14px 14px;}
+.icos-arrow-left1 {background: url(../img/icos/arrow-left1.png); background-size: 14px 14px;}
+.icos-arrow-left2 {background: url(../img/icos/arrow-left2.png); background-size: 14px 14px;}
+.icos-arrow-left3 {background: url(../img/icos/arrow-left3.png); background-size: 14px 14px;}
+.icos-arrow-left4 {background: url(../img/icos/arrow-left4.png); background-size: 14px 14px;}
+.icos-arrow-left5 {background: url(../img/icos/arrow-left5.png); background-size: 14px 14px;}
+.icos-arrow-right {background: url(../img/icos/arrow-right.png); background-size: 14px 14px;}
+.icos-arrow-right1 {background: url(../img/icos/arrow-right1.png); background-size: 14px 14px;}
+.icos-arrow-right2 {background: url(../img/icos/arrow-right2.png); background-size: 14px 14px;}
+.icos-arrow-right3 {background: url(../img/icos/arrow-right3.png); background-size: 14px 14px;}
+.icos-arrow-right4 {background: url(../img/icos/arrow-right4.png); background-size: 14px 14px;}
+.icos-arrow-right5 {background: url(../img/icos/arrow-right5.png); background-size: 14px 14px;}
+.icos-arrow-up {background: url(../img/icos/arrow-up.png); background-size: 14px 14px;}
+.icos-arrow-up1 {background: url(../img/icos/arrow-up1.png); background-size: 14px 14px;}
+.icos-arrow-up2 {background: url(../img/icos/arrow-up2.png); background-size: 14px 14px;}
+.icos-arrow-up3 {background: url(../img/icos/arrow-up3.png); background-size: 14px 14px;}
+.icos-arrow-up4 {background: url(../img/icos/arrow-up4.png); background-size: 14px 14px;}
+.icos-arrow-up5 {background: url(../img/icos/arrow-up5.png); background-size: 14px 14px;}
+.icos-arrow-up-left {background: url(../img/icos/arrow-up-left.png); background-size: 14px 14px;}
+.icos-arrow-up-left1 {background: url(../img/icos/arrow-up-left1.png); background-size: 14px 14px;}
+.icos-arrow-up-left2 {background: url(../img/icos/arrow-up-left2.png); background-size: 14px 14px;}
+.icos-arrow-up-right {background: url(../img/icos/arrow-up-right.png); background-size: 14px 14px;}
+.icos-arrow-up-right1 {background: url(../img/icos/arrow-up-right1.png); background-size: 14px 14px;}
+.icos-arrow-up-right2 {background: url(../img/icos/arrow-up-right2.png); background-size: 14px 14px;}
+.icos-attachment {background: url(../img/icos/attachment.png); background-size: 14px 14px;}
+.icos-backspace {background: url(../img/icos/backspace.png); background-size: 14px 14px;}
+.icos-backspace1 {background: url(../img/icos/backspace1.png); background-size: 14px 14px;}
+.icos-bars {background: url(../img/icos/bars.png); background-size: 14px 14px;}
+.icos-basket {background: url(../img/icos/basket.png); background-size: 14px 14px;}
+.icos-bell {background: url(../img/icos/bell.png); background-size: 14px 14px;}
+.icos-blocked {background: url(../img/icos/blocked.png); background-size: 14px 14px;}
+.icos-blogger {background: url(../img/icos/blogger.png); background-size: 14px 14px;}
+.icos-blogger1 {background: url(../img/icos/blogger1.png); background-size: 14px 14px;}
+.icos-bluetooth {background: url(../img/icos/bluetooth.png); background-size: 14px 14px;}
+.icos-book {background: url(../img/icos/book.png); background-size: 14px 14px;}
+.icos-bookmark {background: url(../img/icos/bookmark.png); background-size: 14px 14px;}
+.icos-bookmark1 {background: url(../img/icos/bookmark1.png); background-size: 14px 14px;}
+.icos-box {background: url(../img/icos/box.png); background-size: 14px 14px;}
+.icos-box-add {background: url(../img/icos/box-add.png); background-size: 14px 14px;}
+.icos-box-remove {background: url(../img/icos/box-remove.png); background-size: 14px 14px;}
+.icos-briefcase {background: url(../img/icos/briefcase.png); background-size: 14px 14px;}
+.icos-briefcase1 {background: url(../img/icos/briefcase1.png); background-size: 14px 14px;}
+.icos-broadcast {background: url(../img/icos/broadcast.png); background-size: 14px 14px;}
+.icos-bus {background: url(../img/icos/bus.png); background-size: 14px 14px;}
+.icos-busy {background: url(../img/icos/busy.png); background-size: 14px 14px;}
+.icos-cabinet {background: url(../img/icos/cabinet.png); background-size: 14px 14px;}
+.icos-calculate {background: url(../img/icos/calculate.png); background-size: 14px 14px;}
+.icos-calendar {background: url(../img/icos/calendar.png); background-size: 14px 14px;}
+.icos-camera {background: url(../img/icos/camera.png); background-size: 14px 14px;}
+.icos-camera1 {background: url(../img/icos/camera1.png); background-size: 14px 14px;}
+.icos-cancel {background: url(../img/icos/cancel.png); background-size: 14px 14px;}
+.icos-cancel1 {background: url(../img/icos/cancel1.png); background-size: 14px 14px;}
+.icos-cars {background: url(../img/icos/cars.png); background-size: 14px 14px;}
+.icos-cart {background: url(../img/icos/cart.png); background-size: 14px 14px;}
+.icos-checkbox {background: url(../img/icos/checkbox.png); background-size: 14px 14px;}
+.icos-checkbox-partial {background: url(../img/icos/checkbox-partial.png); background-size: 14px 14px;}
+.icos-checkbox-unchecked {background: url(../img/icos/checkbox-unchecked.png); background-size: 14px 14px;}
+.icos-checkmark {background: url(../img/icos/checkmark.png); background-size: 14px 14px;}
+.icos-chrome {background: url(../img/icos/chrome.png); background-size: 14px 14px;}
+.icos-clipboard {background: url(../img/icos/clipboard.png); background-size: 14px 14px;}
+.icos-clipboard1 {background: url(../img/icos/clipboard1.png); background-size: 14px 14px;}
+.icos-clock {background: url(../img/icos/clock.png); background-size: 14px 14px;}
+.icos-cloud {background: url(../img/icos/cloud.png); background-size: 14px 14px;}
+.icos-cloud1 {background: url(../img/icos/cloud1.png); background-size: 14px 14px;}
+.icos-clubs {background: url(../img/icos/clubs.png); background-size: 14px 14px;}
+.icos-code {background: url(../img/icos/code.png); background-size: 14px 14px;}
+.icos-coffee {background: url(../img/icos/coffee.png); background-size: 14px 14px;}
+.icos-cog {background: url(../img/icos/cog.png); background-size: 14px 14px;}
+.icos-comments {background: url(../img/icos/comments.png); background-size: 14px 14px;}
+.icos-comments1 {background: url(../img/icos/comments1.png); background-size: 14px 14px;}
+.icos-comments2 {background: url(../img/icos/comments2.png); background-size: 14px 14px;}
+.icos-comments3 {background: url(../img/icos/comments3.png); background-size: 14px 14px; }
+.icos-comments4 {background: url(../img/icos/comments4.png); background-size: 14px 14px;}
+.icos-compass {background: url(../img/icos/compass.png); background-size: 14px 14px;}
+.icos-copy {background: url(../img/icos/copy.png); background-size: 14px 14px;}
+.icos-css3 {background: url(../img/icos/css3.png); background-size: 14px 14px;}
+.icos-cube {background: url(../img/icos/cube.png); background-size: 14px 14px;}
+.icos-cube1 {background: url(../img/icos/cube1.png); background-size: 14px 14px;}
+.icos-dashboard {background: url(../img/icos/dashboard.png); background-size: 14px 14px;}
+.icos-database {background: url(../img/icos/database.png); background-size: 14px 14px;}
+.icos-delicious {background: url(../img/icos/delicious.png); background-size: 14px 14px;}
+.icos-deviantart {background: url(../img/icos/deviantart.png); background-size: 14px 14px;}
+.icos-deviantart1 {background: url(../img/icos/deviantart1.png); background-size: 14px 14px;}
+.icos-diamond {background: url(../img/icos/diamond.png); background-size: 14px 14px;}
+.icos-diamonds {background: url(../img/icos/diamonds.png); background-size: 14px 14px;}
+.icos-download {background: url(../img/icos/download.png); background-size: 14px 14px;}
+.icos-download1 {background: url(../img/icos/download1.png); background-size: 14px 14px;}
+.icos-drawer {background: url(../img/icos/drawer.png); background-size: 14px 14px;}
+.icos-drawer1 {background: url(../img/icos/drawer1.png); background-size: 14px 14px;}
+.icos-dribbble {background: url(../img/icos/dribbble.png); background-size: 14px 14px;}
+.icos-dribbble1 {background: url(../img/icos/dribbble1.png); background-size: 14px 14px;}
+.icos-dribbble2 {background: url(../img/icos/dribbble2.png); background-size: 14px 14px;}
+.icos-droplet {background: url(../img/icos/droplet.png); background-size: 14px 14px;}
+.icos-embed {background: url(../img/icos/embed.png); background-size: 14px 14px;}
+.icos-enter {background: url(../img/icos/enter.png); background-size: 14px 14px;}
+.icos-enter1 {background: url(../img/icos/enter1.png); background-size: 14px 14px;}
+.icos-equalizer {background: url(../img/icos/equalizer.png); background-size: 14px 14px;}
+.icos-exit {background: url(../img/icos/exit.png); background-size: 14px 14px;}
+.icos-eye {background: url(../img/icos/eye.png); background-size: 14px 14px;}
+.icos-eye1 {background: url(../img/icos/eye1.png); background-size: 14px 14px;}
+.icos-facebook {background: url(../img/icos/facebook.png); background-size: 14px 14px;}
+.icos-facebook1 {background: url(../img/icos/facebook1.png); background-size: 14px 14px;}
+.icos-facebook2 {background: url(../img/icos/facebook2.png); background-size: 14px 14px;}
+.icos-feed {background: url(../img/icos/feed.png); background-size: 14px 14px;}
+.icos-feed1 {background: url(../img/icos/feed1.png); background-size: 14px 14px;}
+.icos-feed2 {background: url(../img/icos/feed2.png); background-size: 14px 14px;}
+.icos-file {background: url(../img/icos/file.png); background-size: 14px 14px;}
+.icos-file1 {background: url(../img/icos/file1.png); background-size: 14px 14px;}
+.icos-file-css {background: url(../img/icos/file-css.png); background-size: 14px 14px;}
+.icos-file-excel {background: url(../img/icos/file-excel.png); background-size: 14px 14px;}
+.icos-file-openoffice {background: url(../img/icos/file-openoffice.png); background-size: 14px 14px;}
+.icos-file-pdf {background: url(../img/icos/file-pdf.png); background-size: 14px 14px;}
+.icos-file-powerpoint {background: url(../img/icos/file-powerpoint.png); background-size: 14px 14px;}
+.icos-file-word {background: url(../img/icos/file-word.png); background-size: 14px 14px;}
+.icos-file-xml {background: url(../img/icos/file-xml.png); background-size: 14px 14px;}
+.icos-file-zip {background: url(../img/icos/file-zip.png); background-size: 14px 14px;}
+.icos-film {background: url(../img/icos/film.png); background-size: 14px 14px;}
+.icos-finder {background: url(../img/icos/finder.png); background-size: 14px 14px;}
+.icos-fire {background: url(../img/icos/fire.png); background-size: 14px 14px;}
+.icos-firefox {background: url(../img/icos/firefox.png); background-size: 14px 14px;}
+.icos-flag {background: url(../img/icos/flag.png); background-size: 14px 14px;}
+.icos-flag1 {background: url(../img/icos/flag1.png); background-size: 14px 14px;}
+.icos-flattr {background: url(../img/icos/flattr.png); background-size: 14px 14px;}
+.icos-flickr {background: url(../img/icos/flickr.png); background-size: 14px 14px;}
+.icos-flickr1 {background: url(../img/icos/flickr1.png); background-size: 14px 14px;}
+.icos-flickr2 {background: url(../img/icos/flickr2.png); background-size: 14px 14px;}
+.icos-flip {background: url(../img/icos/flip.png); background-size: 14px 14px;}
+.icos-flip1 {background: url(../img/icos/flip1.png); background-size: 14px 14px;}
+.icos-folder {background: url(../img/icos/folder.png); background-size: 14px 14px;}
+.icos-folder1 {background: url(../img/icos/folder1.png); background-size: 14px 14px;}
+.icos-font {background: url(../img/icos/font.png); background-size: 14px 14px;}
+.icos-forrst {background: url(../img/icos/forrst.png); background-size: 14px 14px;}
+.icos-forrst1 {background: url(../img/icos/forrst1.png); background-size: 14px 14px;}
+.icos-forward {background: url(../img/icos/forward.png); background-size: 14px 14px;}
+.icos-foursquare {background: url(../img/icos/foursquare.png); background-size: 14px 14px;}
+.icos-foursquare1 {background: url(../img/icos/foursquare1.png); background-size: 14px 14px;}
+.icos-gift {background: url(../img/icos/gift.png); background-size: 14px 14px;}
+.icos-git {background: url(../img/icos/git.png); background-size: 14px 14px;}
+.icos-github {background: url(../img/icos/github.png); background-size: 14px 14px;}
+.icos-github1 {background: url(../img/icos/github1.png); background-size: 14px 14px;}
+.icos-github2 {background: url(../img/icos/github2.png); background-size: 14px 14px;}
+.icos-github3 {background: url(../img/icos/github3.png); background-size: 14px 14px;}
+.icos-github4 {background: url(../img/icos/github4.png); background-size: 14px 14px;}
+.icos-github5 {background: url(../img/icos/github5.png); background-size: 14px 14px;}
+.icos-github6 {background: url(../img/icos/github6.png); background-size: 14px 14px;}
+.icos-glasses {background: url(../img/icos/glasses.png); background-size: 14px 14px;}
+.icos-glasses1 {background: url(../img/icos/glasses1.png); background-size: 14px 14px;}
+.icos-google {background: url(../img/icos/google.png); background-size: 14px 14px;}
+.icos-google-drive {background: url(../img/icos/google-drive.png); background-size: 14px 14px;}
+.icos-google-plus {background: url(../img/icos/google-plus.png); background-size: 14px 14px;}
+.icos-google-plus1 {background: url(../img/icos/google-plus1.png); background-size: 14px 14px;}
+.icos-google-plus2 {background: url(../img/icos/google-plus2.png); background-size: 14px 14px;}
+.icos-gplus {background: url(../img/icos/gplus.png); background-size: 14px 14px;}
+.icos-grid-view {background: url(../img/icos/grid-view.png); background-size: 14px 14px;}
+.icos-happy {background: url(../img/icos/happy.png); background-size: 14px 14px;}
+.icos-heart {background: url(../img/icos/heart.png); background-size: 14px 14px;}
+.icos-heart1 {background: url(../img/icos/heart1.png); background-size: 14px 14px;}
+.icos-help {background: url(../img/icos/help.png); background-size: 14px 14px;}
+.icos-help1 {background: url(../img/icos/help1.png); background-size: 14px 14px;}
+.icos-history {background: url(../img/icos/history.png); background-size: 14px 14px;}
+.icos-home {background: url(../img/icos/home.png); background-size: 14px 14px;}
+.icos-home1 {background: url(../img/icos/home1.png); background-size: 14px 14px;}
+.icos-html5 {background: url(../img/icos/html5.png); background-size: 14px 14px;}
+.icos-html51 {background: url(../img/icos/html51.png); background-size: 14px 14px;}
+.icos-icomoon {background: url(../img/icos/icomoon.png); background-size: 14px 14px;}
+.icos-ie {background: url(../img/icos/ie.png); background-size: 14px 14px;}
+.icos-instagram {background: url(../img/icos/instagram.png); background-size: 14px 14px;}
+.icos-joomla {background: url(../img/icos/joomla.png); background-size: 14px 14px;}
+.icos-key {background: url(../img/icos/key.png); background-size: 14px 14px;}
+.icos-key1 {background: url(../img/icos/key1.png); background-size: 14px 14px;}
+.icos-lab {background: url(../img/icos/lab.png); background-size: 14px 14px;}
+.icos-lastfm {background: url(../img/icos/lastfm.png); background-size: 14px 14px;}
+.icos-lastfm1 {background: url(../img/icos/lastfm1.png); background-size: 14px 14px;}
+.icos-left-to-right {background: url(../img/icos/left-to-right.png); background-size: 14px 14px;}
+.icos-libreoffice {background: url(../img/icos/libreoffice.png); background-size: 14px 14px;}
+.icos-lightning {background: url(../img/icos/lightning.png); background-size: 14px 14px;}
+.icos-link {background: url(../img/icos/link.png); background-size: 14px 14px;}
+.icos-link1 {background: url(../img/icos/link1.png); background-size: 14px 14px;}
+.icos-linkedin {background: url(../img/icos/linkedin.png); background-size: 14px 14px;}
+.icos-linkedin1 {background: url(../img/icos/linkedin1.png); background-size: 14px 14px;}
+.icos-loading {background: url(../img/icos/loading.png); background-size: 14px 14px;}
+.icos-loading1 {background: url(../img/icos/loading1.png); background-size: 14px 14px;}
+.icos-location {background: url(../img/icos/location.png); background-size: 14px 14px;}
+.icos-locked {background: url(../img/icos/locked.png); background-size: 14px 14px;}
+.icos-loop {background: url(../img/icos/loop.png); background-size: 14px 14px;}
+.icos-mail {background: url(../img/icos/mail.png); background-size: 14px 14px;}
+.icos-mail1 {background: url(../img/icos/mail1.png); background-size: 14px 14px;}
+.icos-mail2 {background: url(../img/icos/mail2.png); background-size: 14px 14px;}
+.icos-mail3 {background: url(../img/icos/mail3.png); background-size: 14px 14px;}
+.icos-menu {background: url(../img/icos/menu.png); background-size: 14px 14px;}
+.icos-meter-fast {background: url(../img/icos/meter-fast.png); background-size: 14px 14px;}
+.icos-meter-medium {background: url(../img/icos/meter-medium.png); background-size: 14px 14px;}
+.icos-meter-slow {background: url(../img/icos/meter-slow.png); background-size: 14px 14px;}
+.icos-mic {background: url(../img/icos/mic.png); background-size: 14px 14px;}
+.icos-minus {background: url(../img/icos/minus.png); background-size: 14px 14px;}
+.icos-minus1 {background: url(../img/icos/minus1.png); background-size: 14px 14px;}
+.icos-mobile {background: url(../img/icos/mobile.png); background-size: 14px 14px;}
+.icos-mouse {background: url(../img/icos/mouse.png); background-size: 14px 14px;}
+.icos-music {background: url(../img/icos/music.png); background-size: 14px 14px;}
+.icos-neutral {background: url(../img/icos/neutral.png); background-size: 14px 14px;}
+.icos-new {background: url(../img/icos/new.png); background-size: 14px 14px;}
+.icos-newspaper {background: url(../img/icos/newspaper.png); background-size: 14px 14px;}
+.icos-new-tab {background: url(../img/icos/new-tab.png); background-size: 14px 14px;}
+.icos-new-tab1 {background: url(../img/icos/new-tab1.png); background-size: 14px 14px;}
+.icos-opera {background: url(../img/icos/opera.png); background-size: 14px 14px;}
+.icos-paragraph-center {background: url(../img/icos/paragraph-center.png); background-size: 14px 14px;}
+.icos-paragraph-justify {background: url(../img/icos/paragraph-justify.png); background-size: 14px 14px;}
+.icos-paragraph-left {background: url(../img/icos/paragraph-left.png); background-size: 14px 14px;}
+.icos-paragraph-right {background: url(../img/icos/paragraph-right.png); background-size: 14px 14px;}
+.icos-paypal {background: url(../img/icos/paypal.png); background-size: 14px 14px;}
+.icos-paypal1 {background: url(../img/icos/paypal1.png); background-size: 14px 14px;}
+.icos-paypal2 {background: url(../img/icos/paypal2.png); background-size: 14px 14px;}
+.icos-pencil {background: url(../img/icos/pencil.png); background-size: 14px 14px;}
+.icos-pencil1 {background: url(../img/icos/pencil1.png); background-size: 14px 14px;}
+.icos-phone {background: url(../img/icos/phone.png); background-size: 14px 14px;}
+.icos-picassa {background: url(../img/icos/picassa.png); background-size: 14px 14px;}
+.icos-picassa1 {background: url(../img/icos/picassa1.png); background-size: 14px 14px;}
+.icos-picture {background: url(../img/icos/picture.png); background-size: 14px 14px;}
+.icos-pictures {background: url(../img/icos/pictures.png); background-size: 14px 14px;}
+.icos-pie {background: url(../img/icos/pie.png); background-size: 14px 14px;}
+.icos-pinterest {background: url(../img/icos/pinterest.png); background-size: 14px 14px;}
+.icos-pinterest1 {background: url(../img/icos/pinterest1.png); background-size: 14px 14px;}
+.icos-play {background: url(../img/icos/play.png); background-size: 14px 14px;}
+.icos-playlist {background: url(../img/icos/playlist.png); background-size: 14px 14px;}
+.icos-plus {background: url(../img/icos/plus.png); background-size: 14px 14px;}
+.icos-plus1 {background: url(../img/icos/plus1.png); background-size: 14px 14px;}
+.icos-power {background: url(../img/icos/power.png); background-size: 14px 14px;}
+.icos-power1 {background: url(../img/icos/power1.png); background-size: 14px 14px;}
+.icos-printer {background: url(../img/icos/printer.png); background-size: 14px 14px;}
+.icos-puzzle {background: url(../img/icos/puzzle.png); background-size: 14px 14px;}
+.icos-radio-checked {background: url(../img/icos/radio-checked.png); background-size: 14px 14px;}
+.icos-radio-unchecked {background: url(../img/icos/radio-unchecked.png); background-size: 14px 14px;}
+.icos-reddit {background: url(../img/icos/reddit.png); background-size: 14px 14px;}
+.icos-redo {background: url(../img/icos/redo.png); background-size: 14px 14px;}
+.icos-remove {background: url(../img/icos/remove.png); background-size: 14px 14px;}
+.icos-remove1 {background: url(../img/icos/remove1.png); background-size: 14px 14px;}
+.icos-remove2 {background: url(../img/icos/remove2.png); background-size: 14px 14px;}
+.icos-reply {background: url(../img/icos/reply.png); background-size: 14px 14px;}
+.icos-reply1 {background: url(../img/icos/reply1.png); background-size: 14px 14px;}
+.icos-right-to-left {background: url(../img/icos/right-to-left.png); background-size: 14px 14px;}
+.icos-rocket {background: url(../img/icos/rocket.png); background-size: 14px 14px;}
+.icos-safari {background: url(../img/icos/safari.png); background-size: 14px 14px;}
+.icos-screen {background: url(../img/icos/screen.png); background-size: 14px 14px;}
+.icos-search {background: url(../img/icos/search.png); background-size: 14px 14px;}
+.icos-share {background: url(../img/icos/share.png); background-size: 14px 14px;}
+.icos-share1 {background: url(../img/icos/share1.png); background-size: 14px 14px;}
+.icos-share2 {background: url(../img/icos/share2.png); background-size: 14px 14px;}
+.icos-skype {background: url(../img/icos/skype.png); background-size: 14px 14px;}
+.icos-smiley {background: url(../img/icos/smiley.png); background-size: 14px 14px;}
+.icos-soundcloud {background: url(../img/icos/soundcloud.png); background-size: 14px 14px;}
+.icos-soundcloud1 {background: url(../img/icos/soundcloud1.png); background-size: 14px 14px;}
+.icos-spades {background: url(../img/icos/spades.png); background-size: 14px 14px;}
+.icos-star {background: url(../img/icos/star.png); background-size: 14px 14px;}
+.icos-star1 {background: url(../img/icos/star1.png); background-size: 14px 14px;}
+.icos-star2 {background: url(../img/icos/star2.png); background-size: 14px 14px;}
+.icos-stats-up {background: url(../img/icos/stats-up.png); background-size: 14px 14px;}
+.icos-stumbleupon {background: url(../img/icos/stumbleupon.png); background-size: 14px 14px;}
+.icos-stumbleupon1 {background: url(../img/icos/stumbleupon1.png); background-size: 14px 14px;}
+.icos-support {background: url(../img/icos/support.png); background-size: 14px 14px;}
+.icos-tab {background: url(../img/icos/tab.png); background-size: 14px 14px;}
+.icos-tab1 {background: url(../img/icos/tab1.png); background-size: 14px 14px;}
+.icos-tag {background: url(../img/icos/tag.png); background-size: 14px 14px;}
+.icos-target {background: url(../img/icos/target.png); background-size: 14px 14px;}
+.icos-target1 {background: url(../img/icos/target1.png); background-size: 14px 14px;}
+.icos-thumbs-down {background: url(../img/icos/thumbs-down.png); background-size: 14px 14px;}
+.icos-thumbs-up {background: url(../img/icos/thumbs-up.png); background-size: 14px 14px;}
+.icos-tree-view {background: url(../img/icos/tree-view.png); background-size: 14px 14px;}
+.icos-trophy {background: url(../img/icos/trophy.png); background-size: 14px 14px;}
+.icos-tumblr {background: url(../img/icos/tumblr.png); background-size: 14px 14px;}
+.icos-tumblr1 {background: url(../img/icos/tumblr1.png); background-size: 14px 14px;}
+.icos-tux {background: url(../img/icos/tux.png); background-size: 14px 14px;}
+.icos-twitter {background: url(../img/icos/twitter.png); background-size: 14px 14px;}
+.icos-twitter1 {background: url(../img/icos/twitter1.png); background-size: 14px 14px;}
+.icos-twitter2 {background: url(../img/icos/twitter2.png); background-size: 14px 14px;}
+.icos-undo {background: url(../img/icos/undo.png); background-size: 14px 14px;}
+.icos-unlocked {background: url(../img/icos/unlocked.png); background-size: 14px 14px;}
+.icos-upload {background: url(../img/icos/upload.png); background-size: 14px 14px;}
+.icos-upload1 {background: url(../img/icos/upload1.png); background-size: 14px 14px;}
+.icos-upload2 {background: url(../img/icos/upload2.png); background-size: 14px 14px;}
+.icos-user {background: url(../img/icos/user.png); background-size: 14px 14px;}
+.icos-user1 {background: url(../img/icos/user1.png); background-size: 14px 14px;}
+.icos-user2 {background: url(../img/icos/user2.png); background-size: 14px 14px;}
+.icos-vimeo {background: url(../img/icos/vimeo.png); background-size: 14px 14px;}
+.icos-vimeo1 {background: url(../img/icos/vimeo1.png); background-size: 14px 14px;}
+.icos-windows {background: url(../img/icos/windows.png); background-size: 14px 14px;}
+.icos-wordpress {background: url(../img/icos/wordpress.png); background-size: 14px 14px;}
+.icos-wordpress1 {background: url(../img/icos/wordpress1.png); background-size: 14px 14px;}
+.icos-wrench {background: url(../img/icos/wrench.png); background-size: 14px 14px;}
+.icos-xing {background: url(../img/icos/xing.png); background-size: 14px 14px;}
+.icos-xing1 {background: url(../img/icos/xing1.png); background-size: 14px 14px;}
+.icos-yahoo {background: url(../img/icos/yahoo.png); background-size: 14px 14px;}
+.icos-yahoo1 {background: url(../img/icos/yahoo1.png); background-size: 14px 14px;}
+.icos-yelp {background: url(../img/icos/yelp.png); background-size: 14px 14px;}
+.icos-youtube {background: url(../img/icos/youtube.png); background-size: 14px 14px;}
+.icos-youtube1 {background: url(../img/icos/youtube1.png); background-size: 14px 14px;}
+.icos-zoom-in {background: url(../img/icos/zoom-in.png); background-size: 14px 14px;}
+.icos-zoom-out {background: url(../img/icos/zoom-out.png); background-size: 14px 14px;}
+
+
+@media (max-width: 360px){
+/*Calendar Adsjustments*/
+.fc-header {margin-top:15px;}
+.fc-header-title h2{font-size:10px; }
+.fc-header-right {display:none}
+}

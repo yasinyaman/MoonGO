@@ -222,25 +222,55 @@ class CollList(BaseHandler, modules):
 
 
 class CollRename(BaseHandler):
+    """
+        Bu kısmın post olarak halledilmesi lazım.
+        Mesela biri resim olarak burayı link verirse xss ile adamın db de oynama yapar.
+
+        Ayrıca bu kısımlara yine onay koyabiliriz "emin misiniz?" diye.
+    """
     @tornado.web.authenticated
     def get(self, dbname, collname, collrename):
-        self.dbcon(dbname)[collname].rename(collrename)
-        self.redirect("/%s/%s" % (dbname, collrename))
+        try:
+            self.dbcon(dbname)[collname].rename(collrename)
+            self.redirect("/%s/%s" % (dbname, collrename))
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("handlers.CollRename.get",str(e))
+            self.write("Something is wrong!")
 
 
 
 class CollDrop(BaseHandler):
+    """
+        Bu kısmın post olarak halledilmesi lazım.
+        Mesela biri resim olarak burayı link verirse xss ile adamın db de oynama yapar.
+
+        Ayrıca bu kısımlara yine onay koyabiliriz "emin misiniz?" diye.
+    """
     @tornado.web.authenticated
     def get(self, dbname, collname):
-        self.dbcon(dbname).drop_collection(collname)
-        self.redirect("/%s" % (dbname))
+        try:
+            self.dbcon(dbname).drop_collection(collname)
+            self.redirect("/%s" % (dbname))
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("handlers.CollDrop.get",str(e))
+            self.write("Something is wrong!")
 
 
 class CollCreate(BaseHandler):
+    """
+        Bu kısmın post olarak halledilmesi lazım.
+        Mesela biri resim olarak burayı link verirse xss ile adamın db de oynama yapar.
+
+        Ayrıca bu kısımlara yine onay koyabiliriz "emin misiniz?" diye.
+    """
     @tornado.web.authenticated
     def get(self, dbname, collname):
-        self.dbcon(dbname).create_collection(collname)
-        self.redirect("/%s" % (dbname))
+        try:
+            self.dbcon(dbname).create_collection(collname)
+            self.redirect("/%s" % (dbname))
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("handlers.CollCreate.get",str(e))
+            self.write("Something is wrong!")
 
 
 #DÃ¶kÃ¼man iÅŸlemleri
@@ -253,26 +283,36 @@ class DocList(BaseHandler):
         fields=None
         limit=10
         #skip=None
-        doc_list = self.dbcon(dbname)[collname].find(spec=spec, fields=fields, limit=limit)
-        collstats =self.dbcon(dbname).command("collstats", collname)
-        self.render(
-            "documentlist.html",
-            doc_list=doc_list,
-            dbname=dbname,
-            collname=collname,
-            collstats=collstats
-        )
+        try:
+            doc_list = self.dbcon(dbname)[collname].find(spec=spec, fields=fields, limit=limit)
+            collstats =self.dbcon(dbname).command("collstats", collname)
+            self.render(
+                "documentlist.html",
+                doc_list=doc_list,
+                dbname=dbname,
+                collname=collname,
+                collstats=collstats
+            )
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("handlers.DocList.get",str(e))
+            self.write("Something is wrong!")
+
 
 class Doc(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname, collname, docid):
-        doc = self.dbcon(dbname)[collname].find_one(
-            {"_id": pymongo.son_manipulator.ObjectId(docid)})
-        self.render("document.html",
-            doc=doc,
-            dbname=dbname,
-            collname=collname
-        )
+        try:
+            doc = self.dbcon(dbname)[collname].find_one(
+                {"_id": pymongo.son_manipulator.ObjectId(docid)})
+            
+            self.render("document.html",
+                doc=doc,
+                dbname=dbname,
+                collname=collname
+            )
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("handlers.Doc.get",str(e))
+            self.write("Something is wrong!")
 
 
 class DocRemove(BaseHandler):
@@ -284,6 +324,7 @@ class DocRemove(BaseHandler):
             {"_id": pymongo.son_manipulator.ObjectId(docid)})
         #self.render("document.html",doc=doc,dbname=dbname,collname=collname)
         self.redirect("/%s/%s" % (dbname, collname))
+
 
 class DocAdd(BaseHandler):
     @tornado.web.authenticated
@@ -307,34 +348,51 @@ class DocAdd(BaseHandler):
 class DocEdit(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname, docid):
-        doc = self.dbcon(dbname)[collname].find_one(
-            {"_id": pymongo.son_manipulator.ObjectId(docid)})
-        formdoc = json.dumps(doc, default=json_util.default)
-        self.render("documentedit.html",
-            formdoc=formdoc,
-            dbname=dbname,
-            docid=docid,
-            collname=collname,
-        )
+        try:
+            doc = self.dbcon(dbname)[collname].find_one(
+                {"_id": pymongo.son_manipulator.ObjectId(docid)})
+            
+            formdoc = json.dumps(doc, default=json_util.default)
+            
+            self.render("documentedit.html",
+                formdoc=formdoc,
+                dbname=dbname,
+                docid=docid,
+                collname=collname,
+            )
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("handlers.DocEdit.get",str(e))
+            self.write("Something is wrong!")
 
     @tornado.web.authenticated
     def post(self, dbname, collname, docid):
         data = self.get_arguments("jsonData", False)
         save_data = json.loads(data[0], object_hook=json_util.object_hook)
-        self.dbcon(dbname)[collname].save(save_data)
-        self.redirect("/%s/%s" % (dbname, collname))
+        try:
+            self.dbcon(dbname)[collname].save(save_data)
+            self.redirect("/%s/%s" % (dbname, collname))
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("handlers.DocEdit.post",str(e))
+            self.write("Something is wrong!")
 
 
 class DocImport(BaseHandler,modules):
     @tornado.web.authenticated
     def get(self, dbname, collname):
-        self.write("<form method='post' enctype='multipart/form-data'><input type='file' name='data'><input type='submit'></form>")
+        self.write("""
+            <form method='post' enctype='multipart/form-data'>
+                <input type='file' name='data'>
+                <input type='submit'>
+            </form>
+        """)
+    
     @tornado.web.authenticated
     def post(self, dbname, collname):
         dosya = self.request.files["data"][0]
         with open(dosya["filename"],"w") as f:
             f.write(dosya["body"])
         self.write("%s" % (self.import_db(dbname, collname, dosya["filename"])))
+
 
 class DocExport(BaseHandler,modules):
     @tornado.web.authenticated

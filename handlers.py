@@ -359,6 +359,9 @@ class Yukle(BaseHandler,modules):
 
 
 class Indir(BaseHandler,modules):
+    """
+        Buranın dbcon için uyarlanması lazım.
+    """
     @tornado.web.authenticated
     def get(self):
         self.write("""
@@ -367,10 +370,11 @@ class Indir(BaseHandler,modules):
                 <input type="submit">
             </form>
         """)
+
     @tornado.web.authenticated
     def post(self):
         file = self.get_argument("gfs",None)
-        gfs = self.get_file(self.db.files,file)
+        gfs = self.get_file(self.dbcon("xxx").files,file)
         self.set_header('Content-Disposition', 'attachment; filename=%s' % gfs.name)
         self.write(gfs.read())
 
@@ -386,14 +390,20 @@ class SystemJS(BaseHandler):
                 <input type="submit">
             </form>
         """)
+
     @tornado.web.authenticated
     def post(self):
         # Listeleme self.db[dbname].system_js.list()
         name = self.get_argument("name",None)
         dbname = self.get_argument("dbname",None)
         js = self.get_argument("js",None)
+
         if name and dbname and js:
-            self.db[dbname].system_js[name] = js
-            self.write("%s function is ready." % name)
+            try:
+                self.dbcon(dbname).system_js[name] = js
+                self.write("%s function is ready." % name)
+            except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+                self.logger.error("handlers.SystemJS.post",str(e))
+                self.write("Something is wrong!")
         else:
             self.write("Check form values")

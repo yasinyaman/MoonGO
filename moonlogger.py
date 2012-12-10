@@ -11,8 +11,7 @@ class Logger(object):
         """
         self.con = connection
         if not self.con and pr is not 0:
-            print
-            "Error: Location: moonlogger.Logger.__init__, Exception: Connection Error, Time: {0:>s}".format(time.time())
+            print "Error: Location: moonlogger.Logger.__init__, Exception: Connection Error, Time: %s" % str(time.time())
 
         self.pr = pr
 
@@ -37,7 +36,7 @@ class Logger(object):
             "time":"%s" % t,
             "type":"%s" % type
         }
-        pr_data = "%s: Location: %%s, Exception: %%s, Time: %s" % (type.capitalize(),t)
+        pr_data = "%s:: Location: %%s, Exception: %%s, Time: %s" % (type.capitalize(),t)
 
         if extra:
             data["extra"] = extra

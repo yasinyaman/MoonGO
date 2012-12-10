@@ -10,9 +10,9 @@ import functools
 from pymongo.errors import *
 import moonlogger
 import smtplib
+import re
 
 class BaseHandler(tornado.web.RequestHandler):
-
     def get_current_user(self):
         user = self.get_secure_cookie('current_user') or False
         if not user:
@@ -21,17 +21,37 @@ class BaseHandler(tornado.web.RequestHandler):
 
     @property
     def sysdb(self):
-        db = self.settings["sysdb"]
-        return self.settings["sysdb"]
-
-
+        try:
+            return self.settings["sysdb"]
+        except:
+            modules().mailSender("allmail@moongo.org","MoonGO DB Connection","MoonGO can't connect to db.")
+            raise
 
     def dbcon(self,database, state = 1):
-        coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["username"],"database": database})
-        con = pymongo.Connection(coninfo["host"])
-        authcon = con[coninfo["database"]]
+        try:
+            coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["username"],"database": database})
+        except (ConnectionFailure,AutoReconnect) as e:
+            self.logger.error("helpers.BaseHandler.dbcon", str(e), "coninfo")
+            return
+
+        try:
+            con = pymongo.Connection(coninfo["host"])
+        except (ConnectionFailure,AutoReconnect) as e:
+            self.logger.error("helpers.BaseHandler.dbcon", str(e), "con")
+            return
+
+        try:
+            authcon = con[coninfo["database"]]
+        except (ConnectionFailure,AutoReconnect,KeyError,InvalidOperation) as e:
+            self.logger.error("helpers.BaseHandler.dbcon", str(e), "authcon")
+            return
+
         if coninfo["user"] and coninfo["password"]:
-           authcon.authenticate(coninfo["user"],coninfo["password"])
+            try:
+                authcon.authenticate(coninfo["user"],coninfo["password"])
+            except (ConnectionFailure,AutoReconnect) as e:
+                self.logger.error("helpers.BaseHandler.dbcon", str(e), "authcon.authenticate")
+                return
         else:
             pass
         if state == 1:
@@ -42,15 +62,20 @@ class BaseHandler(tornado.web.RequestHandler):
     @property
     def fs(self,database):
         if not hasattr(BaseHandler, "_fs"):
-            _fs = gridfs.GridFS(self.dbcon(database))
+            try:
+                _fs = gridfs.GridFS(self.dbcon(database))
+            except (ConnectionFailure,AutoReconnect) as e:
+                self.logger.error("helpers.BaseHandler.fs", str(e), "_fs")
             return _fs
 
-
     def get_user_locale(self):
-        if self.get_cookie("lang"):
+        if self.get_cookie("lang",None):
             return tornado.locale.get(self.get_cookie("lang"))
-        else:
-            return None
+        return None
+
+    @property
+    def logger(self):
+        return self.settings["logger"](self.sysdb)
 
 class modules(object):
 
@@ -78,9 +103,9 @@ class modules(object):
         try:
             process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
             return process.communicate()[0]
-        except e:
-            BaseHandler.logger.error("helpers.modules.export",str(e),"subprocess")
-            return False
+        except OSError as e:
+            self.logger.error("helpers.modules.export",str(e),"process")
+            return
 
     def import_db(self,db,coll,data,host=None,port=None,user=None,password=None):
         exp = "%s/mongoimport -d %s -c %s --file %s" % (self.settings["mongo_path"],db,coll,data)
@@ -98,15 +123,19 @@ class modules(object):
         try:
             process = subprocess.Popen(exp, shell=True, stdout=subprocess.PIPE)
             return process.communicate()[0]
-        except e:
-            BaseHandler.logger.error("helpers.modules.import_db",str(e),"subprocess")
-            return False
+        except OSError as e:
+            self.logger.error("helpers.modules.import_db",str(e),"process")
+            return
 
 
     def db_list(self):
         db_list = []
-        for i in self.sysdb.moongo_sys.userdbs.find({"user": self.current_user["username"]}):
-            db_list.append(i["database"])
+        try:
+            for i in self.sysdb.moongo_sys.userdbs.find({"user": self.current_user["username"]}):
+                db_list.append(i["database"])
+        except (ConnectionFailure,AutoReconnect,InvalidOperation) as e
+            self.logger.error("helpers.modules.db_list",str(e))
+
         if db_list:
             return db_list
         else:
@@ -115,20 +144,32 @@ class modules(object):
 
 
     def collections_list(self, dbname):
-        collection_list = self.dbcon(dbname).collection_names()
+        try:
+            collection_list = self.dbcon(dbname).collection_names()
+        except (ConnectionFailure,AutoReconnect,InvalidOperation,OperationFailure) as e
+            self.logger.error("helpers.modules.collection_list",str(e))
+
         if collection_list:
             return collection_list
         else:
             return False
 
-        self.__output_results(cursor, out, batch_size)
+        # ???? self.__output_results(cursor, out, batch_size)
 
 
     def upload_to_gridfs(self,db,file={}):
-        fs = gridfs.GridFS(db)
-        with fs.new_file(filename=file["filename"],username=self.current_user["username"],content_type=file["content_type"]) as f:
-            f.write(file["body"])
+        try:
+            fs = gridfs.GridFS(db)
+        except (ConnectionFailure,AutoReconnect,InvalidOperation) as e
+            self.logger.error("helpers.modules.upload_to_gridfs",str(e),"fs")
+            return 
 
+        try:    
+            with fs.new_file(filename=file["filename"],username=self.current_user["username"],content_type=file["content_type"]) as f:
+                f.write(file["body"])
+        except (ConnectionFailure,AutoReconnect,InvalidOperation) as e
+            self.logger.error("helpers.modules.db_list",str(e))
+            return
 
     def get_file(self,db,filename):
         fs = gridfs.GridFS(db)
@@ -158,6 +199,10 @@ class modules(object):
             return True
         else:
             return False
+
+    def verify_mail(self,mail):
+        regex = re.compile(r"(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)",re.IGNORECASE)
+        return mail == regex.findall(mail)
 
 def database_control(method):
     @functools.wraps(method)

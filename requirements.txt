@@ -4,6 +4,6 @@ chardet
 feedparser==5.1.2
 jsonpickle==0.4.0
 py-bcrypt==0.2
-pymongo==2.3
-tornado==2.3
+pymongo
+tornado
 wsgiref==0.1.2

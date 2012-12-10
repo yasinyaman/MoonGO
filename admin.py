@@ -14,6 +14,8 @@ import os
 from handlers import *
 from user import *
 
+import moonlogger
+
 define("port", default=8877, type=int)
 
 settings = dict({
@@ -27,7 +29,8 @@ settings = dict({
     "sysdb": pymongo.Connection(),
     "mongo_path": "/usr/bin",
     "gmail_user": "",
-    "gmail_password":""
+    "gmail_password":"",
+    "logger": moonlogger.Logger
 
 })
 

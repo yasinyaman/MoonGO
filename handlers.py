@@ -123,14 +123,19 @@ class UserDbUpdate(BaseHandler):
         self.sysdb.moongo_sys.userdbs.save(databaseinfo)
         self.redirect("/")
 
+
 class UserDbRemove(BaseHandler):
+    @tornado.web.authenticated
     def get(self, dbname):
-        self.sysdb.moongo_sys.userdbs.remove({"database":dbname, "user":self.current_user["username"]})
-        self.redirect("/")
+        try:
+            self.sysdb.moongo_sys.userdbs.remove({"database":dbname, "user":self.current_user["username"]})
+            self.redirect("/")
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("handlers.UserDbRemove.get",str(e))
+            self.write("Something wrong!")
+
     def post(self, dbname):
         pass
-
-
 
 
 class SetLang(BaseHandler):

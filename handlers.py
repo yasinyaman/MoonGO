@@ -12,7 +12,11 @@ import json
 
 from helpers import BaseHandler, modules, database_control, collection_control
 
+
 class MainHandler(BaseHandler):
+    """
+        Buranın elden geçmesi lazım. Hata ayıklamayı atlıyorum.
+    """
     def get(self):
         db_list = self.db.database_names()
         for dbnamess in db_list:
@@ -33,32 +37,51 @@ class MainHandler(BaseHandler):
             self.render("database.html", db_list=db_list)
             self.write(db_list[0])
 
+
 class UserDbAdd(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         self.render("userdbadd.html")
+
     @tornado.web.authenticated
     def post(self):
-        if self.get_argument("name", False):
+        user = self.current_user["username"]
+        database = self.get_argument("name", None)
+        host = self.get_argument("host", None) + ":" + self.get_argument("port", 27017)
+        username = self.get_argument("username", None)
+        password = self.get_argument("password", None)
+        uri = self.get_argument("uri", None)
+
+        if database:
             databaseinfo = dict(
-                user=self.current_user["username"],
-                database=self.get_argument("name", False),
-                host=self.get_argument("host", False) + ":" + self.get_argument("port", 27017),
-                username = self.get_argument("username", False),
-                password=self.get_argument("password", False),
+                user = user,
+                database = database,
+                host = host,
+                username = username,
+                password = password,
             )
-        elif self.get_argument("uri", False):
-            uri = pymongo.uri_parser.parse_uri(self.get_argument("uri", False), default_port=27017)
+
+        elif uri:
+            uri = pymongo.uri_parser.parse_uri(uri, default_port=27017)
             databaseinfo = dict(
-                user=self.current_user["username"],
-                database=uri["database"],
-                host=uri["nodelist"],
+                user = user,
+                database = uri["database"],
+                host = uri["nodelist"],
                 username = uri["username"],
-                password=uri["password"],
+                password = uri["password"],
             )
-        elif not self.get_argument("name", False) or self.get_argument("uri", False) or self.get_argument("host",False):
-            self.write("HATA")
-        self.sysdb.moongo_sys.userdbs.save(databaseinfo)
+
+        else:
+            self.write("Please check database info and try again")
+            self.logger.error("handlers.UserDbAdd.post","form validate")
+
+        _id = self.sysdb.moongo_sys.userdbs.save(databaseinfo)
+
+        if _id:
+            self.logger.info("handlers.UserDbAdd.post","%s created successfully" % str(_id))
+        else:
+            self.logger.error("handlers.UserDbAdd.post","%s not created successfully" % str(_id))
+            
         self.redirect("/")
 
 class UserDbUpdate(BaseHandler):
@@ -66,6 +89,7 @@ class UserDbUpdate(BaseHandler):
     def get(self, dbname):
         db_info = self.sysdb.moongo_sys.userdbs.find_one({"database":dbname,"user":self.current_user["username"]})
         self.render("userdbupdate.html", db_info = db_info)
+
     @tornado.web.authenticated
     def post(self, dbname):
         db_info = self.sysdb.moongo_sys.userdbs.find_one({"database":dbname,"user":self.current_user["username"]})

@@ -168,24 +168,43 @@ class modules(object):
             with fs.new_file(filename=file["filename"],username=self.current_user["username"],content_type=file["content_type"]) as f:
                 f.write(file["body"])
         except (ConnectionFailure,AutoReconnect,InvalidOperation) as e
-            self.logger.error("helpers.modules.db_list",str(e))
+            self.logger.error("helpers.modules.upload_to_gridfs",str(e),"fs.new_file")
             return
 
     def get_file(self,db,filename):
-        fs = gridfs.GridFS(db)
-        return fs.get_last_version(filename)
+        try:
+            fs = gridfs.GridFS(db)
+            return fs.get_last_version(filename)
+        except (ConnectionFailure,AutoReconnect,InvalidOperation) as e
+            self.logger.error("helpers.modules.get_file",str(e))
+            return
 
     def mailSender(self, to, subject, message):
         gmail_user = self.settings["gmail_user"]
         gmail_pwd = self.settings["gmail_password"]
-        smtpserver = smtplib.SMTP("smtp.gmail.com",587)
-        smtpserver.ehlo()
-        smtpserver.starttls()
-        smtpserver.ehlo
-        smtpserver.login(gmail_user, gmail_pwd)
-        header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject:' + subject + '\n'
-        msg = header + '\n' + message + '\n\n'
-        smtpserver.sendmail(gmail_user, to, msg)
+        try:
+            smtpserver = smtplib.SMTP("smtp.gmail.com",587)
+            smtpserver.ehlo()
+            smtpserver.starttls()
+            smtpserver.ehlo
+        except smtplib.SMTPConnectError as e
+            self.logger.error("helpers.modules.mailSender",str(e),"smtpserver")
+            return
+
+        try:
+            smtpserver.login(gmail_user, gmail_pwd)
+        except smtplib.SMTPAuthenticationError as e
+            self.logger.error("helpers.modules.mailSender",str(e),"smtpserver.login")
+            return
+
+        try:
+            header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject:' + subject + '\n'
+            msg = header + '\n' + message + '\n\n'
+            smtpserver.sendmail(gmail_user, to, msg)
+        except smtplib.SMTPServerDisconnected as e
+            self.logger.error("helpers.modules.mailSender",str(e),"smtpserver.sendmail")
+            return
+
         smtpserver.close()
         
     def username_check(self, username):

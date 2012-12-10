@@ -30,12 +30,24 @@ class Logger(object):
         """
         if not pr: pr = self.pr
         t = time.time()
+
+        if type == "track":
+            data = {
+                "handler":"%s" % loc,
+                "action":"%s" % exp,
+                "time":"%s" % t,
+                "type":"track"
+            }
+            self.con.moongo_sys.logger.insert(data)
+            return
+
         data = {
             "location":"%s" % loc,
             "exception":"%s" % exp,
             "time":"%s" % t,
             "type":"%s" % type
         }
+
         pr_data = "%s:: Location: %%s, Exception: %%s, Time: %s" % (type.capitalize(),t)
 
         if extra:
@@ -58,3 +70,6 @@ class Logger(object):
 
     def info(self,loc,exp,extra=None,pr=None):
         self._set_data(loc,exp,"info",extra,pr)
+
+    def track(self,handler,action):
+        self._set_data(handler,action,"track",None,None)

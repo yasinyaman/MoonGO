@@ -200,7 +200,7 @@ class HostDBCopy(BaseHandler):
                 hostdb["db"][0],
                 hostdb["host"][0]
             )
-        self.redirect("/%s" % (hostdb["db"]))
+        self.redirect("/%s" % (hostdb["db"][0]))
         #self.write(host.get(host))
 
 

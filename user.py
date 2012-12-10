@@ -7,7 +7,7 @@ import tornado.web
 import tornado.escape
 import time
 import hashlib
-from helpers import BaseHandler, modules, database_control, collection_control, noauth, root_control
+from helpers import *
 
 class RegisterHandler(BaseHandler):
     @noauth

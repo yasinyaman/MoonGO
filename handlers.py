@@ -7,10 +7,11 @@ import tornado.options
 import tornado.escape
 import tornado.locale
 import pymongo
+from pymongo.errors import *
 from bson import json_util
 import json
 
-from helpers import BaseHandler, modules, database_control, collection_control
+from helpers import *
 
 
 class MainHandler(BaseHandler):
@@ -208,20 +209,22 @@ class HostDBCopy(BaseHandler):
 class CollList(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname):
-        collection_list = self.collections_list(dbname)
-        self.render(
-            "collection.html",
-            collection_list=collection_list,
-            dbname=dbname
-        )
-
-
+        try:
+            collection_list = self.collections_list(dbname)
+            self.render(
+                "collection.html",
+                collection_list=collection_list,
+                dbname=dbname
+            )
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("handlers.CollList.get",str(e))
+            self.write("Something is wrong!")
 
 
 class CollRename(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname, collrename):
-        doc_list = self.dbcon(dbname)[collname].rename(collrename)
+        self.dbcon(dbname)[collname].rename(collrename)
         self.redirect("/%s/%s" % (dbname, collrename))
 
 
@@ -249,7 +252,7 @@ class DocList(BaseHandler):
         spec=None
         fields=None
         limit=10
-        skip=None
+        #skip=None
         doc_list = self.dbcon(dbname)[collname].find(spec=spec, fields=fields, limit=limit)
         collstats =self.dbcon(dbname).command("collstats", collname)
         self.render(

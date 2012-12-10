@@ -2,6 +2,7 @@
 
 import time
 
+
 class Logger(object):
     def __init__(self,connection=None,pr=2):
         """

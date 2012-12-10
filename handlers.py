@@ -85,6 +85,7 @@ class UserDbAdd(BaseHandler):
 
         self.redirect("/")
 
+
 class UserDbUpdate(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
@@ -147,6 +148,7 @@ class SetLang(BaseHandler):
         else:
             self.redirect("/")
 
+
 class DBList(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self):
@@ -173,7 +175,6 @@ class HostDBCopy(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         self.render("hostdbcopy.html")
-
 
     @tornado.web.authenticated
     def post(self):
@@ -236,7 +237,6 @@ class CollRename(BaseHandler):
         except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
             self.logger.error("handlers.CollRename.get",str(e))
             self.write("Something is wrong!")
-
 
 
 class CollDrop(BaseHandler):
@@ -409,6 +409,7 @@ class Yukle(BaseHandler,modules):
                 <input type="submit">
             </form>
         """)
+        
     @tornado.web.authenticated
     def post(self):
         file = self.request.files["gfs"][0]

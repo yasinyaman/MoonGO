@@ -9,14 +9,19 @@ import time
 import hashlib
 from helpers import *
 
+
 class RegisterHandler(BaseHandler):
     @noauth
     def get(self,key=None):
-        invitation = self.sysdb.moongo_sys.user_invitation.find_one({"key":key})
-        if invitation:
-            self.render("register.html", invitation = invitation)
-        else:
-            self.write("Not found invitation")
+        try:
+            invitation = self.sysdb.moongo_sys.user_invitation.find_one({"key":key})
+            if invitation:
+                self.render("register.html", invitation = invitation)
+            else:
+                self.write("Not found invitation")
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("user.RegisterHandler.get",str(e))
+            self.write("Something is wrong!")
 
     @noauth
     def post(self,key=None):
@@ -57,7 +62,6 @@ class RegisterHandler(BaseHandler):
                 self.write("Check mail adress. Its not acceptable.")
                 return
 
-
             user = dict(
                     name=name,
                     username=username,
@@ -77,13 +81,14 @@ class LoginHandler(BaseHandler):
     @noauth
     def get(self):
         self.render("login.html")
+
     @noauth
     def post(self):
         username = self.get_argument("username", False)
         password = self.get_argument("password", False)
+
         if username and password:
-            user = self.sysdb.moongo_sys.users.find_one({"username": username},
-                {"_id": 0})
+            user = self.sysdb.moongo_sys.users.find_one({"username": username},{"_id": 0})
             if user:
                 crypt_pass = bcrypt.hashpw(password, user["password"])
                 pass_check = crypt_pass == user["password"]
@@ -108,22 +113,34 @@ class LogoutHandler(BaseHandler):
 
 
 class RemoveHandler(BaseHandler):
+    """
+        Bu kısmın post olarak halledilmesi lazım.
+        Mesela biri resim olarak burayı link verirse xss ile adamın db de oynama yapar.
+
+        Ayrıca bu kısımlara yine onay koyabiliriz "emin misiniz?" diye.
+    """
     @tornado.web.authenticated
     def get(self):
-        self.sysdb.moongo_sys.users.remove({"username":self.current_user["username"]})
-        self.sysdb.moongo_sys.userdbs.remove({"user":self.current_user["username"]})
-        self.clear_cookie("current_user")
-        self.redirect("/")
+        try:
+            self.sysdb.moongo_sys.users.remove({"username":self.current_user["username"]})
+            self.sysdb.moongo_sys.userdbs.remove({"user":self.current_user["username"]})
+            self.clear_cookie("current_user")
+            self.redirect("/")
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("user.RemoveHandler.get",str(e))
+            self.write("Something is wrong!")
+
 
 class UpdateHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        if not self.current_user:
-            self.redirect("/")
-        else:
+        try:
             user_info = self.sysdb.moongo_sys.users.find_one({"username":self.current_user["username"]})
             db_info = self.sysdb.moongo_sys.userdbs.find({"user":self.current_user["username"]})
             self.render("update.html",user_info = user_info, db_info = db_info )
+        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
+            self.logger.error("user.UpdateHandler.get",str(e))
+            self.write("Something is wrong!")
 
     @tornado.web.authenticated
     def post(self):
@@ -161,7 +178,6 @@ class UpdateHandler(BaseHandler):
         self.redirect("/auth/login")
 
 
-
 class RecoveryHandler(BaseHandler, modules):
     @noauth
     def get(self):
@@ -174,7 +190,6 @@ class RecoveryHandler(BaseHandler, modules):
 
     @noauth
     def post(self):
-
         mail = self.get_argument("email")
         if not modules().verify_mail(mail):
             self.write("Check your mail adress. Its wrong")
@@ -235,6 +250,7 @@ class PasswordResetHandler(BaseHandler, modules):
         else:
             self.write("This key is not valid.")
 
+
 class Authorizing(BaseHandler, modules):
     @tornado.web.authenticated
     @root_control
@@ -246,12 +262,14 @@ class Authorizing(BaseHandler, modules):
                 <input type="submit">
             </form>
         """)
+
     @tornado.web.authenticated
     @root_control
     def post(self):
         username = self.get_argument("username")
         authorizing = self.get_argument("authorizing")
         self.sysdb.moongo_sys.user_authorizing.save({"username":username, "authorizing":authorizing})
+
 
 class InvitationHandler(BaseHandler, modules):
     @tornado.web.authenticated
@@ -274,6 +292,3 @@ class InvitationHandler(BaseHandler, modules):
         sub = "Moongo invitation"
         self.mailSender(mail, sub, mail_text) 
         self.write("Send Mail")
-
-        
-

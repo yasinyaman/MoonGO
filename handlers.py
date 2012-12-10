@@ -400,9 +400,9 @@ class DocExport(BaseHandler,modules):
         self.write("%s" % (str(self.export(dbname,collname))))
 
 
-class Yukle(BaseHandler,modules):
+class Upload(BaseHandler,modules):
     @tornado.web.authenticated
-    def get(self):
+    def get(self, dbname):
         self.write("""
             <form method="post" enctype="multipart/form-data">
                 <input type="file" name="gfs">
@@ -411,29 +411,19 @@ class Yukle(BaseHandler,modules):
         """)
         
     @tornado.web.authenticated
-    def post(self):
+    def post(self, dbname):
         file = self.request.files["gfs"][0]
         self.write(file["filename"])
-        print self.upload_to_gridfs(self.db.files,file=file)
+        print self.upload_to_gridfs(dbname.files,file=file)
 
 
-class Indir(BaseHandler,modules):
+class Download(BaseHandler,modules):
     """
         Buranın dbcon için uyarlanması lazım.
     """
     @tornado.web.authenticated
-    def get(self):
-        self.write("""
-            <form method="post">
-                <input type="text" name="gfs">
-                <input type="submit">
-            </form>
-        """)
-
-    @tornado.web.authenticated
-    def post(self):
-        file = self.get_argument("gfs",None)
-        gfs = self.get_file(self.dbcon("xxx").files,file)
+    def get(self, dbname, filename):
+        gfs = self.get_file(self.dbcon(dbname).files, filename)
         self.set_header('Content-Disposition', 'attachment; filename=%s' % gfs.name)
         self.write(gfs.read())
 

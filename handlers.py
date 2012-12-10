@@ -81,7 +81,7 @@ class UserDbAdd(BaseHandler):
             self.logger.info("handlers.UserDbAdd.post","%s created successfully" % str(_id))
         else:
             self.logger.error("handlers.UserDbAdd.post","%s not created successfully" % str(_id))
-            
+
         self.redirect("/")
 
 class UserDbUpdate(BaseHandler):
@@ -93,15 +93,33 @@ class UserDbUpdate(BaseHandler):
     @tornado.web.authenticated
     def post(self, dbname):
         db_info = self.sysdb.moongo_sys.userdbs.find_one({"database":dbname,"user":self.current_user["username"]})
+        
         databaseinfo = dict(
             _id=db_info["_id"],
-            user=self.current_user["username"],
-            database=self.get_argument("database", False),
-            host=self.get_argument("host", False),
-            username = self.get_argument("username", False),
-            password=self.get_argument("password", False),
-            port=self.get_argument("port", 27017)
+            user=self.current_user["username"]
         )
+
+        database = self.get_argument("database", None)
+        host=self.get_argument("host", None),
+        username = self.get_argument("username", None),
+        password = self.get_argument("password", None),
+        port = self.get_argument("port", None)
+
+        if database:
+            databaseinfo.update({"database":database})
+
+        if host:
+            databaseinfo.update({"host":host})
+
+        if username:
+            databaseinfo.update({"username":username})
+
+        if password:
+            databaseinfo.update({"password":password})
+
+        if port:
+            databaseinfo.update({"port":port})
+
         self.sysdb.moongo_sys.userdbs.save(databaseinfo)
         self.redirect("/")
 

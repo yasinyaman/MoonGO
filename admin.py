@@ -28,8 +28,8 @@ settings = dict({
     "site_url": "http://iglon.com:8877",
     "sysdb": pymongo.Connection(),
     "mongo_path": "/usr/bin",
-    "gmail_user": "yasnyaman@gmail.com",
-    "gmail_password":"28661051",
+    "gmail_user": "",
+    "gmail_password":"",
     "logger": moonlogger.Logger
 
 })

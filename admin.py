@@ -28,8 +28,8 @@ settings = dict({
     "site_url": "http://iglon.com:8877",
     "sysdb": pymongo.Connection(),
     "mongo_path": "/usr/bin",
-    "gmail_user": "",
-    "gmail_password":"",
+    "gmail_user": "yasnyaman@gmail.com",
+    "gmail_password":"28661051",
     "logger": moonlogger.Logger
 
 })
@@ -47,8 +47,8 @@ urls = ([
     (r"/auth/invitation/?",InvitationHandler),
 
     # Bu URL patternleri bÃ¶yle olmadÄ± sanki
-    (r"/", DBList),
-    (r"/databases/?", DBList),
+    (r"/", Dashboard),
+    (r"/databases/?", Dashboard),
     (r"/hostdbcopy/?", HostDBCopy),
     (r"/userdbadd/?", UserDbAdd),
     (r"/userdbupdate/([^/]+)/?",UserDbUpdate),

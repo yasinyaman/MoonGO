@@ -1,5 +1,10 @@
-<strong>Add:</strong> URL path "/[db]/[colletion]/add"<br/>
-<h3><a href="/{{dbname}}/{{collname}}/add">Document Add</a></h3>
+
+ 
+ 
+ {% extends "base.html" %}
+{% block body %} 
+<div class="container">
+<a href="/{{dbname}}/{{collname}}/add"><button class="btn btn-primary" type="button">Document Add</button></a>
 
 <h1>Collection Stats</h1>
 
@@ -20,3 +25,12 @@
      {% end %}
 
  </ul>
+ 
+   </div> <!-- /container -->
+
+
+
+
+
+
+       {% end %}

@@ -7,6 +7,7 @@ import tornado.options
 import tornado.escape
 import tornado.locale
 import pymongo
+import hashlib
 from pymongo.errors import *
 from bson import json_util
 import json
@@ -149,11 +150,11 @@ class SetLang(BaseHandler):
             self.redirect("/")
 
 
-class DBList(BaseHandler, modules):
+class Dashboard(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self):
         db_list = self.db_list()
-        self.render("database.html",db_list=db_list)
+        self.render("dashboard.html",db_list=db_list, user=self.current_user["name"], gravatar = hashlib.md5(self.current_user["mail"]).hexdigest())
 
 
 class DBDrop(BaseHandler):

@@ -1,4 +1,6 @@
-          <form action="/userdbadd" method="post">
+ {% extends "base.html" %}
+{% block body %} 
+          <form method="post">
             <fieldset>
               <legend>Database Add</legend>
                    <label class="control-label" for="name">name:</label>
@@ -36,4 +38,4 @@
 
             </fieldset>
           </form>
-
+        {% end %}

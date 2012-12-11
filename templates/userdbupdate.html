@@ -1,5 +1,6 @@
-
-          <form action="/userdbupdate/{{db_info["database"]}}" method="post">
+{% extends "base.html" %}
+{% block body %} 
+          <form  method="post">
             <fieldset>
               <legend>Database Add</legend>
                    <label class="control-label" for="database">database:</label>
@@ -35,4 +36,4 @@
             </fieldset>
           </form>
 
-
+        {% end %}

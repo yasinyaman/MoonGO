@@ -1,8 +1,16 @@
+{% extends "base.html" %}
+{% block body %} 
 <h1>Document</h1>
-<h3><a href="/{{dbname}}/{{collname}}/{{doc["_id"]}}/remove"> Remove</a> | <a href="/{{dbname}}/{{collname}}/{{doc["_id"]}}/edit">Edit</a></h3>
-<ul>
+<a href="/{{dbname}}/{{collname}}/{{doc["_id"]}}/remove"> <button class="btn btn-primary" type="button">Remove</button></a>
+<a href="/{{dbname}}/{{collname}}/{{doc["_id"]}}/edit"><button class="btn btn-primary" type="button">Edit</button></a>
+</br>
+<div class="span12">
+<div class="block-unit">
 {{doc}}
- </ul>
+            </div>
+                        </div>
 
+ 
 
+  {% end %}
 

@@ -20,7 +20,7 @@
 {% block body %} 
 <h3>Document Edit</h3>
 <a href="/{{dbname}}/{{collname}}/{{docid}}/remove"> Remove</a></br>
-
+<button class="btn btn-primary" type="button" onClick="getJSON()">Save</button>
 <div id="auto">
     <div id="contents">
         <div id="jsonformatter"></div>
@@ -53,9 +53,12 @@
         };
 
         editor.set(json);
+         function getJSON() {
+        var json = editor.get();
+        
+        $.post("",{jsonData:JSON.stringify(json, null, 2)},function(donen_sonuc){alert("OK");});
+    }
     </script>
-
-
 
 
 

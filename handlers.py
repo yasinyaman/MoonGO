@@ -49,7 +49,7 @@ class UserDbAdd(BaseHandler):
     def post(self):
         user = self.current_user["username"]
         database = self.get_argument("name", None)
-        host = self.get_argument("host", None) + ":" + self.get_argument("port", 27017)
+        host = self.get_argument("host", None) + ":" + str(self.get_argument("port", 27017))
         username = self.get_argument("username", None)
         password = self.get_argument("password", None)
         uri = self.get_argument("uri", None)
@@ -454,3 +454,39 @@ class SystemJS(BaseHandler):
                 self.write("Something is wrong!")
         else:
             self.write("Check form values")
+
+
+class Jobs(BaseHandler):
+    def post(self, db, coll):
+        if db and coll:
+            insert = self.dbcon(db).system.profile.find({"ns": "%s.%s" % (db, coll), "op": "insert"})
+            update = self.dbcon(db).system.profile.find({"ns": "%s.%s" % (db, coll), "op": "update"})
+            query = self.dbcon(db).system.profile.find({"ns": "%s.%s" % (db, coll), "op": "query"})
+
+            data = {}
+            data["insert"] = []
+            data["update"] = []
+            data["query"] = []
+
+            for i in insert:
+                if i.get("_id", None):
+                    i["_id"] = str(i["_id"])
+                if i.get("ts", None):
+                    i["ts"] = i["ts"].isoformat()
+                data["insert"].append(i)
+
+            for i in update:
+                if i.get("_id", None):
+                    i["_id"] = str(i["_id"])
+                if i.get("ts", None):
+                    i["ts"] = i["ts"].isoformat()
+                data["update"].append(i)
+
+            for i in query:
+                if i["query"].get("_id", None):
+                    i["query"]["_id"] = str(i["query"]["_id"])
+                if i.get("ts", None):
+                    i["ts"] = i["ts"].isoformat()
+                data["query"].append(i)
+
+            self.write(json.dumps(data))

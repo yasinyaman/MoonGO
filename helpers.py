@@ -219,9 +219,9 @@ class modules(object):
         else:
             return False
 
-    def verify_mail(self,mail):
-        regex = re.compile(r"(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)",re.IGNORECASE)
-        return mail == regex.findall(mail)
+    def verify_mail(self, mail):
+        regex = re.compile(r"(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)", re.IGNORECASE)
+        return mail == regex.findall(mail)[0]
 
 def database_control(method):
     @functools.wraps(method)

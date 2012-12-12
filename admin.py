@@ -28,13 +28,8 @@ settings = dict({
     "site_url": "http://iglon.com:8877",
     "sysdb": pymongo.Connection(),
     "mongo_path": "/usr/bin",
-<<<<<<< HEAD
-    "gmail_user": "yasnyaman@gmail.com",
-    "gmail_password": "28661051",
-=======
     "gmail_user": "",
-    "gmail_password":"",
->>>>>>> f03414909263e5d368d4c3936e42475aaca4327d
+    "gmail_password": "",
     "logger": moonlogger.Logger
 
 })
@@ -61,6 +56,7 @@ urls = ([
     (r"/upload/([^/]+)/?", Upload),
     (r"/download/([^/]+)/([^/]+)/?", Download),
     (r"/js/?", SystemJS),
+    (r"/([^/]+)/([^/]+)/jobs/?", Jobs),
     (r"/([^/]+)/([^/]+)/import/?", DocImport),
     (r"/([^/]+)/([^/]+)/export/?", DocExport),
     (r"/lng/([^/]+)/?", SetLang),  # tr_TR , en_US ...

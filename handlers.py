@@ -56,33 +56,33 @@ class UserDbAdd(BaseHandler):
 
         if database:
             databaseinfo = dict(
-                user = user,
-                database = database,
-                host = host,
-                username = username,
-                password = password,
+                user=user,
+                database=database,
+                host=host,
+                username=username,
+                password=password,
             )
 
         elif uri:
             uri = pymongo.uri_parser.parse_uri(uri, default_port=27017)
             databaseinfo = dict(
-                user = user,
-                database = uri["database"],
-                host = uri["nodelist"],
-                username = uri["username"],
-                password = uri["password"],
+                user=user,
+                database=uri["database"],
+                host=uri["nodelist"],
+                username=uri["username"],
+                password=uri["password"],
             )
 
         else:
             self.write("Please check database info and try again")
-            self.logger.error("handlers.UserDbAdd.post","form validate")
+            self.logger.error("handlers.UserDbAdd.post", "form validate")
 
         _id = self.sysdb.moongo_sys.userdbs.save(databaseinfo)
 
         if _id:
-            self.logger.info("handlers.UserDbAdd.post","%s created successfully" % str(_id))
+            self.logger.info("handlers.UserDbAdd.post", "%s created successfully" % str(_id))
         else:
-            self.logger.error("handlers.UserDbAdd.post","%s not created successfully" % str(_id))
+            self.logger.error("handlers.UserDbAdd.post", "%s not created successfully" % str(_id))
 
         self.redirect("/")
 
@@ -90,38 +90,38 @@ class UserDbAdd(BaseHandler):
 class UserDbUpdate(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
-        db_info = self.sysdb.moongo_sys.userdbs.find_one({"database":dbname,"user":self.current_user["username"]})
-        self.render("userdbupdate.html", db_info = db_info)
+        db_info = self.sysdb.moongo_sys.userdbs.find_one({"database": dbname, "user": self.current_user["username"]})
+        self.render("userdbupdate.html", db_info=db_info)
 
     @tornado.web.authenticated
     def post(self, dbname):
-        db_info = self.sysdb.moongo_sys.userdbs.find_one({"database":dbname,"user":self.current_user["username"]})
-        
+        db_info = self.sysdb.moongo_sys.userdbs.find_one({"database": dbname, "user": self.current_user["username"]})
+
         databaseinfo = dict(
             _id=db_info["_id"],
             user=self.current_user["username"]
         )
 
         database = self.get_argument("database", None)
-        host=self.get_argument("host", None),
+        host = self.get_argument("host", None),
         username = self.get_argument("username", None),
         password = self.get_argument("password", None),
         port = self.get_argument("port", None)
 
         if database:
-            databaseinfo.update({"database":database})
+            databaseinfo.update({"database": database})
 
         if host:
-            databaseinfo.update({"host":host})
+            databaseinfo.update({"host": host})
 
         if username:
-            databaseinfo.update({"username":username})
+            databaseinfo.update({"username": username})
 
         if password:
-            databaseinfo.update({"password":password})
+            databaseinfo.update({"password": password})
 
         if port:
-            databaseinfo.update({"port":port})
+            databaseinfo.update({"port": port})
 
         self.sysdb.moongo_sys.userdbs.save(databaseinfo)
         self.redirect("/")
@@ -131,10 +131,10 @@ class UserDbRemove(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
         try:
-            self.sysdb.moongo_sys.userdbs.remove({"database":dbname, "user":self.current_user["username"]})
+            self.sysdb.moongo_sys.userdbs.remove({"database": dbname, "user": self.current_user["username"]})
             self.redirect("/")
-        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
-            self.logger.error("handlers.UserDbRemove.get",str(e))
+        except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
+            self.logger.error("handlers.UserDbRemove.get", str(e))
             self.write("Something wrong!")
 
     def post(self, dbname):
@@ -142,7 +142,7 @@ class UserDbRemove(BaseHandler):
 
 
 class SetLang(BaseHandler):
-    def get(self,lang):
+    def get(self, lang):
         self.set_cookie("lang", lang)
         if self.request.headers.get('Referer'):
             self.redirect(self.request.headers.get('Referer'))
@@ -154,14 +154,14 @@ class Dashboard(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self):
         db_list = self.db_list()
-        self.render("dashboard.html",db_list=db_list, user=self.current_user["name"], gravatar = hashlib.md5(self.current_user["mail"]).hexdigest())
+        self.render("dashboard.html", db_list=db_list, user=self.current_user["name"], gravatar=hashlib.md5(self.current_user["mail"]).hexdigest())
 
 
 class DBDrop(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname):
         self.dbcon(dbname, 0).drop_database(dbname)
-        self.sysdb.moongo_sys.userdbs.remove({"database":dbname, "username":self.current_user["username"]})
+        self.sysdb.moongo_sys.userdbs.remove({"database": dbname, "username": self.current_user["username"]})
         self.redirect("/")
 
 
@@ -218,8 +218,8 @@ class CollList(BaseHandler, modules):
                 collection_list=collection_list,
                 dbname=dbname
             )
-        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
-            self.logger.error("handlers.CollList.get",str(e))
+        except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
+            self.logger.error("handlers.CollList.get", str(e))
             self.write("Something is wrong!")
 
 
@@ -235,8 +235,8 @@ class CollRename(BaseHandler):
         try:
             self.dbcon(dbname)[collname].rename(collrename)
             self.redirect("/%s/%s" % (dbname, collrename))
-        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
-            self.logger.error("handlers.CollRename.get",str(e))
+        except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
+            self.logger.error("handlers.CollRename.get", str(e))
             self.write("Something is wrong!")
 
 
@@ -252,8 +252,8 @@ class CollDrop(BaseHandler):
         try:
             self.dbcon(dbname).drop_collection(collname)
             self.redirect("/%s" % (dbname))
-        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
-            self.logger.error("handlers.CollDrop.get",str(e))
+        except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
+            self.logger.error("handlers.CollDrop.get", str(e))
             self.write("Something is wrong!")
 
 
@@ -269,8 +269,8 @@ class CollCreate(BaseHandler):
         try:
             self.dbcon(dbname).create_collection(collname)
             self.redirect("/%s" % (dbname))
-        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
-            self.logger.error("handlers.CollCreate.get",str(e))
+        except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
+            self.logger.error("handlers.CollCreate.get", str(e))
             self.write("Something is wrong!")
 
 
@@ -280,13 +280,13 @@ class DocList(BaseHandler):
     #@database_control
     #@collection_control
     def get(self, dbname, collname):
-        spec=None
-        fields=None
-        limit=10
+        spec = None
+        fields = None
+        limit = 10
         #skip=None
         try:
             doc_list = self.dbcon(dbname)[collname].find(spec=spec, fields=fields, limit=limit)
-            collstats =self.dbcon(dbname).command("collstats", collname)
+            collstats = self.dbcon(dbname).command("collstats", collname)
             self.render(
                 "documentlist.html",
                 doc_list=doc_list,
@@ -294,8 +294,8 @@ class DocList(BaseHandler):
                 collname=collname,
                 collstats=collstats
             )
-        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
-            self.logger.error("handlers.DocList.get",str(e))
+        except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
+            self.logger.error("handlers.DocList.get", str(e))
             self.write("Something is wrong!")
 
 
@@ -305,21 +305,21 @@ class Doc(BaseHandler, modules):
         try:
             doc = self.dbcon(dbname)[collname].find_one(
                 {"_id": pymongo.son_manipulator.ObjectId(docid)})
-            
+
             self.render("document.html",
                 doc=doc,
                 dbname=dbname,
                 collname=collname
             )
-        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
-            self.logger.error("handlers.Doc.get",str(e))
+        except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
+            self.logger.error("handlers.Doc.get", str(e))
             self.write("Something is wrong!")
 
 
 class DocRemove(BaseHandler):
     @tornado.web.authenticated
     def get(self, dbname, collname, docid):
-        """doc = db_conn[collname].find_one(
+        """doc=db_conn[collname].find_one(
         {"_id": pymongo.son_manipulator.ObjectId(docid)})"""
         self.dbcon(dbname)[collname].remove(
             {"_id": pymongo.son_manipulator.ObjectId(docid)})
@@ -352,17 +352,17 @@ class DocEdit(BaseHandler):
         try:
             doc = self.dbcon(dbname)[collname].find_one(
                 {"_id": pymongo.son_manipulator.ObjectId(docid)})
-            
+
             formdoc = json.dumps(doc, default=json_util.default)
-            
+
             self.render("documentedit.html",
                 formdoc=formdoc,
                 dbname=dbname,
                 docid=docid,
                 collname=collname,
             )
-        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
-            self.logger.error("handlers.DocEdit.get",str(e))
+        except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
+            self.logger.error("handlers.DocEdit.get", str(e))
             self.write("Something is wrong!")
 
     @tornado.web.authenticated
@@ -372,12 +372,12 @@ class DocEdit(BaseHandler):
         try:
             self.dbcon(dbname)[collname].save(save_data)
             self.redirect("/%s/%s" % (dbname, collname))
-        except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
-            self.logger.error("handlers.DocEdit.post",str(e))
+        except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
+            self.logger.error("handlers.DocEdit.post", str(e))
             self.write("Something is wrong!")
 
 
-class DocImport(BaseHandler,modules):
+class DocImport(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname, collname):
         self.write("""
@@ -386,22 +386,22 @@ class DocImport(BaseHandler,modules):
                 <input type='submit'>
             </form>
         """)
-    
+
     @tornado.web.authenticated
     def post(self, dbname, collname):
         dosya = self.request.files["data"][0]
-        with open(dosya["filename"],"w") as f:
+        with open(dosya["filename"], "w") as f:
             f.write(dosya["body"])
         self.write("%s" % (self.import_db(dbname, collname, dosya["filename"])))
 
 
-class DocExport(BaseHandler,modules):
+class DocExport(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname, collname):
-        self.write("%s" % (str(self.export(dbname,collname))))
+        self.write("%s" % (str(self.export(dbname, collname))))
 
 
-class Upload(BaseHandler,modules):
+class Upload(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname):
         self.write("""
@@ -410,18 +410,15 @@ class Upload(BaseHandler,modules):
                 <input type="submit">
             </form>
         """)
-        
+
     @tornado.web.authenticated
     def post(self, dbname):
         file = self.request.files["gfs"][0]
         self.write(file["filename"])
-        print self.upload_to_gridfs(dbname.files,file=file)
+        print self.upload_to_gridfs(dbname.files, file=file)
 
 
-class Download(BaseHandler,modules):
-    """
-        Buranın dbcon için uyarlanması lazım.
-    """
+class Download(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname, filename):
         gfs = self.get_file(self.dbcon(dbname).files, filename)
@@ -444,16 +441,16 @@ class SystemJS(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         # Listeleme self.db[dbname].system_js.list()
-        name = self.get_argument("name",None)
-        dbname = self.get_argument("dbname",None)
-        js = self.get_argument("js",None)
+        name = self.get_argument("name", None)
+        dbname = self.get_argument("dbname", None)
+        js = self.get_argument("js", None)
 
         if name and dbname and js:
             try:
                 self.dbcon(dbname).system_js[name] = js
                 self.write("%s function is ready." % name)
-            except (ConnectionFailure,AutoReconnect,OperationFailure) as e:
-                self.logger.error("handlers.SystemJS.post",str(e))
+            except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
+                self.logger.error("handlers.SystemJS.post", str(e))
                 self.write("Something is wrong!")
         else:
             self.write("Check form values")

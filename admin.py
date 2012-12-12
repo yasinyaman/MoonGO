@@ -29,7 +29,7 @@ settings = dict({
     "sysdb": pymongo.Connection(),
     "mongo_path": "/usr/bin",
     "gmail_user": "yasnyaman@gmail.com",
-    "gmail_password":"28661051",
+    "gmail_password": "28661051",
     "logger": moonlogger.Logger
 
 })
@@ -43,22 +43,22 @@ urls = ([
     (r"/auth/update/?", UpdateHandler),
     (r"/auth/remove/?", RemoveHandler),
     (r"/auth/recovery/?", RecoveryHandler),
-    (r"/auth/reset/([^/]+)/?",PasswordResetHandler),
-    (r"/auth/invitation/?",InvitationHandler),
+    (r"/auth/reset/([^/]+)/?", PasswordResetHandler),
+    (r"/auth/invitation/?", InvitationHandler),
 
     # Bu URL patternleri bÃ¶yle olmadÄ± sanki
     (r"/", Dashboard),
     (r"/databases/?", Dashboard),
     (r"/hostdbcopy/?", HostDBCopy),
     (r"/userdbadd/?", UserDbAdd),
-    (r"/userdbupdate/([^/]+)/?",UserDbUpdate),
-    (r"/userdbremove/([^/]+)/?",UserDbRemove),
-    (r"/upload/([^/]+)/?",Upload),
-    (r"/download/([^/]+)/([^/]+)/?",Download),
-    (r"/js/?",SystemJS),
-    (r"/([^/]+)/([^/]+)/import/?",DocImport),
-    (r"/([^/]+)/([^/]+)/export/?",DocExport),
-    (r"/lng/([^/]+)/?", SetLang), #tr_TR , en_US ...
+    (r"/userdbupdate/([^/]+)/?", UserDbUpdate),
+    (r"/userdbremove/([^/]+)/?", UserDbRemove),
+    (r"/upload/([^/]+)/?", Upload),
+    (r"/download/([^/]+)/([^/]+)/?", Download),
+    (r"/js/?", SystemJS),
+    (r"/([^/]+)/([^/]+)/import/?", DocImport),
+    (r"/([^/]+)/([^/]+)/export/?", DocExport),
+    (r"/lng/([^/]+)/?", SetLang),  # tr_TR , en_US ...
     (r"/([^/]+)/drop/?", DBDrop),
     (r"/([^/]+)/?", CollList),
     (r"/([^/]+)/copy/([^/]+)/?", DBCopy),
@@ -73,6 +73,7 @@ urls = ([
 ])
 
 application = tornado.web.Application(urls, **settings)
+
 
 def main():
     tornado.options.parse_command_line()

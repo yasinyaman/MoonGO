@@ -469,24 +469,18 @@ class Jobs(BaseHandler):
             data["query"] = []
 
             for i in insert:
-                if i.get("_id", None):
-                    i["_id"] = str(i["_id"])
                 if i.get("ts", None):
                     i["ts"] = i["ts"].isoformat()
                 data["insert"].append(i)
 
             for i in update:
-                if i.get("_id", None):
-                    i["_id"] = str(i["_id"])
                 if i.get("ts", None):
                     i["ts"] = i["ts"].isoformat()
                 data["update"].append(i)
 
             for i in query:
-                if i["query"].get("_id", None):
-                    i["query"]["_id"] = str(i["query"]["_id"])
                 if i.get("ts", None):
                     i["ts"] = i["ts"].isoformat()
                 data["query"].append(i)
 
-            self.write(json.dumps(data))
+            self.write(json.dumps(data, default=json_util.default))

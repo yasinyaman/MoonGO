@@ -8,7 +8,7 @@
     <link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'>
     -->
 
-    <script type="text/javascript" src="/static/jsoneditor/jsoneditor.js"></script>
+    <script type="text/javascript" src="/static/jsoneditor/jsoneditor.js?v=1"></script>
     <script type="text/javascript" src="/static/jsoneditor/queryparams.js"></script>
     <script type="text/javascript" src="/static/jsoneditor/ajax.js"></script>
     <script type="text/javascript" src="/static/jsoneditor/fileretriever.js"></script>
@@ -18,8 +18,8 @@
     <script type="text/javascript" src="/static/jsoneditor/lib/jsonlint/jsonlint.js"></script>
   {% end %}
 {% block body %} 
-<h3>Document Edit</h3>
-<a href="/{{dbname}}/{{collname}}/{{docid}}/remove"> Remove</a></br>
+<h4>Document Edit</h4>
+<a href="/{{dbname}}/{{collname}}/{{docid}}/remove"><button class="btn btn-primary" type="button">Remove</button></a>
 <button class="btn btn-primary" type="button" onClick="getJSON()">Save</button>
 <div id="auto">
     <div id="contents">
@@ -41,10 +41,6 @@
 
 
 <script type="text/javascript">
-    app.resize();
-</script>
-<script type="text/javascript" >
-
    var json = {% autoescape None %}  {{formdoc}};
 
         formatter.set(json);
@@ -53,7 +49,8 @@
         };
 
         editor.set(json);
-         function getJSON() {
+    
+    function getJSON() {
         var json = editor.get();
         
         $.post("",{jsonData:JSON.stringify(json, null, 2)},function(donen_sonuc){alert("OK");});

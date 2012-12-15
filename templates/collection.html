@@ -16,14 +16,14 @@
 <strong>Export:</strong> URL path "/[db]/[colletion]/export"<br/>
 
 <h1>Collections</h1>
-							<table class="table table-striped table-invoice table-bordered">
+							<table class="table table-striped table-bordered">
 
 								<tbody>
 								      {% for collection in collection_list %}
 									<tr>
 										<td class='collection'><a href="/{{dbname}}/{{collection}}">{{collection}}</a></td>
-										<td class='price'>$1120.00</td>
-										<td class='qty'><div class="btn-group">
+										<td class='status'>$1120.00</td>
+										<td class='button'><div class="btn-group">
 					      <a href="#" class="btn"><i class="icon-edit"></i></a>
 					      <a href="#" class="btn"><i class="icon-font"></i></a>
 					      <a href="/{{dbname}}/{{collection}}/drop" class="btn"><i class=" icos-remove"></i></a>
@@ -42,7 +42,71 @@
 
 
 
+          <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 id="myModalLabel"><strong>Admin</strong></h4>
+            </div>
+            <div class="modal-body">
+              
+              <div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
+    <li><a href="#tab2" data-toggle="tab">Section 2</a></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active" id="overview">
+      <h4></h4>
+      <h4>Delete Database</h4>
+      <a href="/{{dbname}}/{{collection}}/drop"><button type="button" class="btn btn-danger">Delete</button></a>
+    </div>
+    <div class="tab-pane" id="tab2">
+ <h4>External DB Copy:</h4>
+ <form name="input" action="/hostdbcopy" method="post">
+ {% module xsrf_form_html() %}
 
-
+User: <input type="text" name="user"><br>
+Password: <input type="text" name="password"><br>
+Adress*: <input type="text" name="host"><br>
+Host DB*: <input type="text" name="hostdb"><br>
+Clone DB*: <input type="text" name="db"><br>
+<input type="submit" value="Copy">
+</form>
+    </div>
+  </div>
+</div>
+              
+              
+            </div>
+            <div class="modal-footer">
+              <button class="btn" data-dismiss="modal">Close</button>
+            </div>
+          </div>
 
        {% end %}	
+       
+       
+ {% block js %}
+
+
+    <script type="text/javascript" src="/static/js/bootstrap-transition.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-alert.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-modal.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-dropdown.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-scrollspy.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-tab.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-popover.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-button.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-typeahead.js"></script>
+	<script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript" src="/static/js/sidebar-chart.js"></script>
+
+
+	<!-- You can add more layouts if you want -->
+	<script type="text/javascript" src="/static/js/noty/themes/default.js"></script>
+    <script type="text/javascript" src="/static/js/ui-noty.js"></script>
+
+    <script type="text/javascript" src="/static/js/admin.js"></script>
+ {% end %}

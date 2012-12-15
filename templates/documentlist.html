@@ -2,15 +2,49 @@
  
  
  {% extends "base.html" %}
+ 
+ 
+ {% block meta %} 
+     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js'></script>
+    <script src="https://raw.github.com/forward/json-formatter/master/JSONFormatter.js"></script>
+ {% end %}
+ 
 {% block body %} 
 <div class="container">
 <a href="/{{dbname}}/{{collname}}/add"><button class="btn btn-primary" type="button">Document Add</button></a>
 
 <h1>Collection Stats</h1>
 
-{{collstats}} <br/>
+ <br/>
+ <style>
+ ul#json {
+  margin: 10px 0 0; 
+  padding: 0; }
+  ul#json i, ul#json b {
+    color: black;
+    font-style: normal; }
+  ul#json ul {
+    margin: 3px 0 0 20px;
+    padding: 0; }
+  ul#json li {
+    padding: 0 0 3px;
+    list-style-type: none;
+    margin: 0;
+    color: #666666; }
+    </style>
 
-
+    <script type='text/javascript'>
+      //<![CDATA[
+        jQuery(function($) {
+          var json = {% autoescape None %} {{collstats}};
+          JSONFormatter.format(json, {'appendTo' : '.uncollapsed'});
+          JSONFormatter.format(json, {'appendTo' : '.collapsed', 'collapse' : true, 'list_id' : 'json2' });
+        });
+      //]]>
+    </script>
+          <div class="uncollapsed">
+        <h2>Formatted</h2>
+      </div>
  <form action="/{{dbname}}/{{collname}}" method="get">
  {% module xsrf_form_html() %}
  <textarea rows="10%" cols="80%" name="queryy">{"query":{},"fields":{},"sort":{},"limit":{},"options":{"explain":True}}

@@ -36,41 +36,49 @@ settings = dict({
 
 
 urls = ([
-    # auth
-    (r"/auth/register/?([^/]+)?/?", RegisterHandler),
+
     (r"/auth/login/?", LoginHandler),
     (r"/auth/logout/?", LogoutHandler),
     (r"/auth/update/?", UpdateHandler),
     (r"/auth/remove/?", RemoveHandler),
     (r"/auth/recovery/?", RecoveryHandler),
-    (r"/auth/reset/([^/]+)/?", PasswordResetHandler),
-    (r"/auth/invitation/?", InvitationHandler),
+    (r"/auth/invitation/?",InvitationHandler),
+    (r"/auth/reset/([^/]+)/?",PasswordResetHandler),
+    (r"/auth/register/?([^/]+)?/?", RegisterHandler),
 
     # Bu URL patternleri bÃ¶yle olmadÄ± sanki
     (r"/", Dashboard),
-    (r"/databases/?", Dashboard),
-    (r"/hostdbcopy/?", HostDBCopy),
+
     (r"/userdbadd/?", UserDbAdd),
-    (r"/userdbupdate/([^/]+)/?", UserDbUpdate),
-    (r"/userdbremove/([^/]+)/?", UserDbRemove),
-    (r"/upload/([^/]+)/?", Upload),
-    (r"/download/([^/]+)/([^/]+)/?", Download),
-    (r"/js/?", SystemJS),
-    (r"/([^/]+)/([^/]+)/jobs/?", Jobs),
-    (r"/([^/]+)/([^/]+)/import/?", DocImport),
-    (r"/([^/]+)/([^/]+)/export/?", DocExport),
-    (r"/lng/([^/]+)/?", SetLang),  # tr_TR , en_US ...
-    (r"/([^/]+)/drop/?", DBDrop),
+    (r"/([^/]+)/userdbupdate/?",UserDbUpdate),
+    (r"/([^/]+)/userdbremove/?",UserDbRemove),
+
+    (r"/databases/?", Dashboard),
+    (r"/drop/?", DBDrop),
+    (r"/([^/]+)/copy/?", DBCopy),
+    (r"/([^/]+)/remotedbcopy/?", RemoteDBCopy),
+
     (r"/([^/]+)/?", CollList),
-    (r"/([^/]+)/copy/([^/]+)/?", DBCopy),
-    (r"/([^/]+)/([^/]+)/create/?", CollCreate),
-    (r"/([^/]+)/([^/]+)/drop/?", CollDrop),
-    (r"/([^/]+)/([^/]+)/rename/([^/]+)/?", CollRename),
+    (r"/([^/]+)/create/?", CollCreate),
+    (r"/([^/]+)/drop/?", CollDrop),
+    (r"/([^/]+)/([^/]+)/rename/?", CollRename),
+
+
     (r"/([^/]+)/([^/]+)/?", DocList),
     (r"/([^/]+)/([^/]+)/add/?", DocAdd),
+    (r"/([^/]+)/([^/]+)/import/?",DocImport),
+    (r"/([^/]+)/([^/]+)/export/?",DocExport),
     (r"/([^/]+)/([^/]+)/([^/]+)/?", Doc),
     (r"/([^/]+)/([^/]+)/([^/]+)/remove/?", DocRemove),
-    (r"/([^/]+)/([^/]+)/([^/]+)/edit/?", DocEdit)
+    (r"/([^/]+)/([^/]+)/([^/]+)/edit/?", DocEdit),
+
+
+    (r"/upload/?",Upload),
+    (r"/download/?",Download),
+
+    (r"/lng/([^/]+)/?", SetLang), #tr_TR , en_US .
+
+    (r"/js/?",SystemJS)
 ])
 
 application = tornado.web.Application(urls, **settings)

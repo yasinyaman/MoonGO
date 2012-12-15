@@ -14,31 +14,22 @@ import json
 
 from helpers import *
 
+class DbUserAdd(BaseHandler):
+    @tornado.web.authenticated
+    def post(self, dbname):
+        name = self.current_user["username"]
+        password = self.current_user["password"]
+        ronly = self.current_user["ronly"]
+        self.dbcon(dbname).add_user(name, password, read_only=ronly)
+        self.write(db_list[0])
 
-class MainHandler(BaseHandler):
-    """
-        Buranın elden geçmesi lazım. Hata ayıklamayı atlıyorum.
-    """
-    def get(self):
-        db_list = self.db.database_names()
-        for dbnamess in db_list:
-            print "Database :" + dbnamess
-            collection_list = self.db[dbnamess].collection_names()
-            for i in collection_list:
-                print "> Colletion :" + i
-                db_conn = self.db[dbnamess]
-                doc_list = db_conn[i].find()
-                if doc_list:
-                    for doc in doc_list:
-                        print doc.get("_id")
-                        for key in doc.keys():
-                            print ">> Key :" + key
-                else:
-                    pass
-            self.redirect("/databases")
-            self.render("database.html", db_list=db_list)
-            self.write(db_list[0])
 
+class DbUserRemove(BaseHandler):
+    @tornado.web.authenticated
+    def post(self, dbname):
+        name = self.current_user["username"]
+        self.dbcon(dbname).remove_user(name)
+        self.write(db_list[0])
 
 class UserDbAdd(BaseHandler):
     @tornado.web.authenticated
@@ -47,23 +38,9 @@ class UserDbAdd(BaseHandler):
 
     @tornado.web.authenticated
     def post(self):
-        user = self.current_user["username"]
-        database = self.get_argument("name", None)
-        host = self.get_argument("host", None) + ":" + str(self.get_argument("port", 27017))
-        username = self.get_argument("username", None)
-        password = self.get_argument("password", None)
         uri = self.get_argument("uri", None)
 
-        if database:
-            databaseinfo = dict(
-                user=user,
-                database=database,
-                host=host,
-                username=username,
-                password=password,
-            )
-
-        elif uri:
+        if uri:
             uri = pymongo.uri_parser.parse_uri(uri, default_port=27017)
             databaseinfo = dict(
                 user=user,
@@ -159,60 +136,49 @@ class Dashboard(BaseHandler, modules):
 
 class DBDrop(BaseHandler):
     @tornado.web.authenticated
-    def get(self, dbname):
-        self.dbcon(dbname, 0).drop_database(dbname)
+    def post(self):
+        data = self.get_arguments("dbname", False)
+        self.dbcon(data, 0).drop_database(data)
         self.sysdb.moongo_sys.userdbs.remove({"database": dbname, "username": self.current_user["username"]})
         self.redirect("/")
 
 
 class DBCopy(BaseHandler):
     @tornado.web.authenticated
-    def get(self, dbname, to_dbname):
-        self.dbcon(dbname, 0).copy_database(dbname, to_dbname)
+    def post(self, to_dbname):
+        data = self.get_arguments("dbname", False)
+        self.dbcon(data, 0).copy_database(data, to_dbname)
         self.redirect("/%s" % (to_dbname))
 
 
-class HostDBCopy(BaseHandler):
-    @tornado.web.authenticated
-    def get(self):
-        self.render("hostdbcopy.html")
 
+class RemoteDBCopy(BaseHandler):
     @tornado.web.authenticated
-    def post(self):
-        hostdb = self.request.arguments
-        try:
-            user = hostdb["user"][0]
-        except:
-            user = False
-        try:
-            password = hostdb["password"][0]
-        except:
-            password = False
-
-        if user and password:
-            self.dbcon(hostdb["db"][0], 0).copy_database(
-                hostdb["hostdb"][0],
-                hostdb["db"][0],
-                hostdb["host"][0],
-                user,
-                password
+    def post(self, dbname):
+        uri = self.get_argument("uri", None)
+        if uri:
+            uri = pymongo.uri_parser.parse_uri(uri, default_port=27017)
+            self.dbcon(dbname, 0).copy_database(
+                uri["database"],
+                dbname,
+                uri["nodelist"],
+                uri["username"],
+                uri["password"]
             )
-        else:
-            self.dbcon(hostdb["db"][0], 0).copy_database(
-                hostdb["hostdb"][0],
-                hostdb["db"][0],
-                hostdb["host"][0]
-            )
-        self.redirect("/%s" % (hostdb["db"][0]))
+            self.redirect("/%s" % (dbname))
         #self.write(host.get(host))
 
 
-#Koleksiyon iÅŸlemleri
 class CollList(BaseHandler, modules):
     @tornado.web.authenticated
     def get(self, dbname):
         try:
             collection_list = self.collections_list(dbname)
+            print collection_list
+            for i in collection_list:
+                if re.search("system\.[a-z]+",i):
+                    collection_list.remove(i)
+            
             self.render(
                 "collection.html",
                 collection_list=collection_list,
@@ -222,55 +188,39 @@ class CollList(BaseHandler, modules):
             self.logger.error("handlers.CollList.get", str(e))
             self.write("Something is wrong!")
 
-
 class CollRename(BaseHandler):
-    """
-        Bu kısmın post olarak halledilmesi lazım.
-        Mesela biri resim olarak burayı link verirse xss ile adamın db de oynama yapar.
-
-        Ayrıca bu kısımlara yine onay koyabiliriz "emin misiniz?" diye.
-    """
     @tornado.web.authenticated
-    def get(self, dbname, collname, collrename):
+    def post(self, dbname, collname):
         try:
-            self.dbcon(dbname)[collname].rename(collrename)
+            data = self.get_arguments("collrename", False)
+            self.dbcon(dbname)[collname].rename(data)
             self.redirect("/%s/%s" % (dbname, collrename))
         except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
-            self.logger.error("handlers.CollRename.get", str(e))
+            self.logger.error("handlers.CollRename.post", str(e))
             self.write("Something is wrong!")
 
 
 class CollDrop(BaseHandler):
-    """
-        Bu kısmın post olarak halledilmesi lazım.
-        Mesela biri resim olarak burayı link verirse xss ile adamın db de oynama yapar.
-
-        Ayrıca bu kısımlara yine onay koyabiliriz "emin misiniz?" diye.
-    """
     @tornado.web.authenticated
-    def get(self, dbname, collname):
+    def post(self, dbname):
         try:
-            self.dbcon(dbname).drop_collection(collname)
+            data = self.get_arguments("collname", False)
+            self.dbcon(dbname).drop_collection(data)
             self.redirect("/%s" % (dbname))
         except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
-            self.logger.error("handlers.CollDrop.get", str(e))
+            self.logger.error("handlers.CollDrop.post", str(e))
             self.write("Something is wrong!")
 
 
 class CollCreate(BaseHandler):
-    """
-        Bu kısmın post olarak halledilmesi lazım.
-        Mesela biri resim olarak burayı link verirse xss ile adamın db de oynama yapar.
-
-        Ayrıca bu kısımlara yine onay koyabiliriz "emin misiniz?" diye.
-    """
     @tornado.web.authenticated
-    def get(self, dbname, collname):
+    def post(self, dbname):
         try:
-            self.dbcon(dbname).create_collection(collname)
+            data = self.get_arguments("collname", False)
+            self.dbcon(dbname).create_collection(data)
             self.redirect("/%s" % (dbname))
         except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
-            self.logger.error("handlers.CollCreate.get", str(e))
+            self.logger.error("handlers.CollCreate.post", str(e))
             self.write("Something is wrong!")
 
 
@@ -426,20 +376,21 @@ class Download(BaseHandler, modules):
         self.write(gfs.read())
 
 
+
 class SystemJS(BaseHandler):
     @tornado.web.authenticated
-    def get(self):
+    def get(self,dbname):
         self.write("""
             <form method="post">
                 <input type="text" name="name"><br>
-                <input type="hidden" name="dbname" value="deneme">
-                <textarea name="js" cols="500" rows="500"></textarea><br>
+                <input type="hidden" name="dbname" value="%s">
+                <textarea name="js" cols="10" rows="10"></textarea><br>
                 <input type="submit">
             </form>
-        """)
+        """ % dbname)
 
     @tornado.web.authenticated
-    def post(self):
+    def post(self,dbname):
         # Listeleme self.db[dbname].system_js.list()
         name = self.get_argument("name", None)
         dbname = self.get_argument("dbname", None)
@@ -454,6 +405,7 @@ class SystemJS(BaseHandler):
                 self.write("Something is wrong!")
         else:
             self.write("Check form values")
+
 
 
 class Jobs(BaseHandler):

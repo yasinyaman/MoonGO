@@ -242,7 +242,7 @@ class DocList(BaseHandler):
                 doc_list=doc_list,
                 dbname=dbname,
                 collname=collname,
-                collstats=collstats
+                collstats=json.dumps(collstats, default=json_util.default)
             )
         except (ConnectionFailure, AutoReconnect, OperationFailure) as e:
             self.logger.error("handlers.DocList.get", str(e))

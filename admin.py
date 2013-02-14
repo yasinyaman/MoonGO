@@ -7,7 +7,6 @@ import tornado.ioloop
 import tornado.options
 import tornado.escape
 import tornado.locale
-import pymongo
 from tornado.options import define, options
 import os
 
@@ -15,6 +14,8 @@ from handlers import *
 from user import *
 
 import moonlogger
+
+import motor
 
 define("port", default=8877, type=int)
 
@@ -26,7 +27,7 @@ settings = dict({
     "xsrf_cookies": False,
     "debug": True,
     "site_url": "http://iglon.com:8877",
-    "sysdb": pymongo.Connection(),
+    "sysdb": motor.MotorClient().open_sync(),
     "mongo_path": "/usr/bin",
     "gmail_user": "",
     "gmail_password": "",

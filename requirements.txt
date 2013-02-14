@@ -5,5 +5,6 @@ feedparser==5.1.2
 jsonpickle==0.4.0
 py-bcrypt==0.2
 pymongo
+-e git clone git://github.com/mongodb/motor.git
 tornado
 wsgiref==0.1.2

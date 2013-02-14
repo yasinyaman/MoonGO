@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from helpers import BaseHandler
 import bcrypt
 import tornado.web
 import tornado.escape

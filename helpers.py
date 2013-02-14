@@ -3,6 +3,7 @@
 import tornado.web
 import tornado.escape
 import tornado.locale
+import tornado.gen
 
 import pymongo, gridfs
 import subprocess
@@ -11,6 +12,11 @@ from pymongo.errors import *
 import moonlogger
 import smtplib
 import re
+
+
+import motor
+
+
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -27,15 +33,17 @@ class BaseHandler(tornado.web.RequestHandler):
             modules().mailSender("allmail@moongo.org","MoonGO DB Connection","MoonGO can't connect to db.")
             raise
 
+    @tornado.gen.engine
     def dbcon(self,database, state = 1):
         try:
-            coninfo = self.sysdb.moongo_sys.userdbs.find_one({"user": self.current_user["username"],"database": database})
+            coninfo = yield motor.Op(self.sysdb.moongo_sys.userdbs.find_one,
+                {"user": self.current_user["username"],"database": database})
         except (ConnectionFailure,AutoReconnect) as e:
             self.logger.error("helpers.BaseHandler.dbcon", str(e), "coninfo")
             return
 
         try:
-            con = pymongo.Connection(coninfo["host"])
+            con = motor.MotorClient(coninfo["host"]).open_sync()  #coninfo['port']
         except (ConnectionFailure,AutoReconnect) as e:
             self.logger.error("helpers.BaseHandler.dbcon", str(e), "con")
             return
@@ -162,9 +170,9 @@ class modules(object):
             fs = gridfs.GridFS(db)
         except (ConnectionFailure,AutoReconnect,InvalidOperation) as e:
             self.logger.error("helpers.modules.upload_to_gridfs",str(e),"fs")
-            return 
+            return
 
-        try:    
+        try:
             with fs.new_file(filename=file["filename"],username=self.current_user["username"],content_type=file["content_type"]) as f:
                 f.write(file["body"])
         except (ConnectionFailure,AutoReconnect,InvalidOperation) as e:
@@ -206,7 +214,7 @@ class modules(object):
             return
 
         smtpserver.close()
-        
+
     def username_check(self, username):
         if self.sysdb.moongo_sys.users.find_one({"username":username}):
             return True
@@ -255,7 +263,7 @@ def root_control(method):
         if not self.sysdb.moongo_sys.user_authorizing.find_one({"username":self.current_user["username"], "authorizing":"root"}):
             return self.write("There is no authority.")
         return method(self, *args, **kwargs)
-            
+
     return control
 
 
